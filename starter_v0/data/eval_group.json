@@ -1,108 +1,315 @@
 {
-  "dataset_id": "day03_group_cases_anhtu",
+  "dataset_id": "day04_group_research_cleanup",
   "dataset_role": "group",
-  "description": "Case nhom tu viet: 5 single turn + 5 multi turn. Tap trung vao ranh gioi gui Telegram, ngoai pham vi, tool moi cite, va carry-over tham so.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
+  "description": "10 team cases: 5 single-turn + 5 multi-turn. Covers citations, missing social target, duplicate cleanup with explicit source preference, no-tool behavior, paper discovery, corrected preferences, source switching, renewed publishing approval, and timeframe carryover. Tool routing/arguments are graded; cleanup output is covered by unit tests. No case expects send.",
+  "allowed_failure_types": [
+    "wrong_tool",
+    "wrong_arg_value",
+    "wrong_boundary",
+    "unnecessary_tool",
+    "out_of_scope",
+    "missing_info"
+  ],
   "cases": [
     {
       "id": "G01_cite_routing",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "query": "Tạo trích dẫn cho bài 'GPT-5 ra mắt' đăng ngày 2026-08-07, link https://openai.com/blog/gpt-5",
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "cite", "args": {"url": "https://openai.com/blog/gpt-5", "date": "2026-08-07"}}]},
-      "metadata": {"what_it_tests": "Đã có đủ title, url, date và user xin trích dẫn thì phải gọi cite, không gọi fetch hay lookup."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "cite",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5",
+              "date": "2026-08-07",
+              "title": "GPT-5 ra mắt"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Đã có đủ title, url, date và user xin trích dẫn thì phải gọi cite, không gọi fetch hay lookup."
+      }
     },
     {
-      "id": "G02_send_when_user_confirmed",
-      "phase": "B", "suite": "group",
-      "query": "Mình xác nhận rồi, gửi đúng câu này lên Telegram: Bản tin AI sáng nay đã sẵn sàng",
-      "failure_type": "wrong_boundary",
-      "expect": {"tool_calls": [{"name": "send", "args": {"confirmed": true}}]},
-      "metadata": {"what_it_tests": "Khi user đã xác nhận rõ trong cùng câu thì gọi send với confirmed=true, không hỏi lại thừa."}
+      "id": "G02_missing_social_target",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tóm tắt 4 tweet mới nhất giúp mình.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Thiếu cả account lẫn topic: hỏi lại bằng text, không gọi social_search với query rỗng hay đoán account."
+      }
     },
     {
-      "id": "G03_out_of_scope_translate",
-      "phase": "B", "suite": "group",
-      "query": "Dịch giúp mình câu 'good morning' sang tiếng Pháp",
-      "failure_type": "out_of_scope",
-      "expect": {"no_tool": true, "behavior": "refuse"},
-      "metadata": {"what_it_tests": "Dịch thuật nằm ngoài phạm vi research nên không được gọi tool."}
+      "id": "G03_clean_duplicate_sources",
+      "phase": "B",
+      "suite": "group",
+      "query": "Đây là kết quả đã thu thập: [{\"title\": \"Model Q release\", \"url\": \"https://x.com/reposter/status/123\", \"summary\": \"Acme released Model Q with an open evaluation dataset.\"}, {\"title\": \"Model Q release\", \"url\": \"https://acme.example/news/model-q\", \"summary\": \"Acme released Model Q with an open evaluation dataset.\"}]. Loại nội dung trùng, ưu tiên acme.example vì đây là nguồn chính thức cho thông báo này. Giữ nguyên các item khi truyền vào tool; chưa cần định dạng hay tìm thêm.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clean_results",
+            "args": {
+              "items": [
+                {
+                  "title": "Model Q release",
+                  "url": "https://x.com/reposter/status/123",
+                  "summary": "Acme released Model Q with an open evaluation dataset."
+                },
+                {
+                  "title": "Model Q release",
+                  "url": "https://acme.example/news/model-q",
+                  "summary": "Acme released Model Q with an open evaluation dataset."
+                }
+              ],
+              "trusted_domains": [
+                "acme.example"
+              ]
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Dữ liệu đã có: route tới clean_results, truyền đủ hai nguồn và domain do user chỉ định; không tìm lại hay loại trùng bằng cách bỏ nguồn trước khi gọi tool."
+      }
     },
     {
       "id": "G04_thanks_no_tool",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "query": "Cảm ơn bạn nhé, hôm nay vậy là đủ rồi",
       "failure_type": "unnecessary_tool",
-      "expect": {"no_tool": true, "behavior": "answer_without_tool"},
-      "metadata": {"what_it_tests": "Lời cảm ơn xã giao thì trả lời thẳng, không gọi tool."}
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "metadata": {
+        "what_it_tests": "Lời cảm ơn xã giao thì trả lời thẳng, không gọi tool."
+      }
     },
     {
       "id": "G05_papers_latest_count",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "query": "Tìm 3 paper arXiv mới nhất về AI agents",
       "failure_type": "wrong_arg_value",
-      "expect": {"tool_calls": [{"name": "papers", "args": {"max_results": 3, "sort_by": "submittedDate"}}]},
-      "metadata": {"what_it_tests": "'3 paper' thành max_results=3 và 'mới nhất' thành sort_by=submittedDate."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "papers",
+            "args": {
+              "max_results": 3,
+              "sort_by": "submittedDate"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "'3 paper' thành max_results=3 và 'mới nhất' thành sort_by=submittedDate."
+      }
     },
     {
-      "id": "G06_multi_clarify_handle_limit",
-      "phase": "B", "suite": "group",
+      "id": "G06_multi_cleanup_preference_correction",
+      "phase": "B",
+      "suite": "group",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clean_results",
+            "args": {
+              "items": [
+                {
+                  "title": "Model Q release",
+                  "url": "https://x.com/reposter/status/123",
+                  "summary": "Acme released Model Q with an open evaluation dataset."
+                },
+                {
+                  "title": "Model Q release",
+                  "url": "https://acme.example/news/model-q",
+                  "summary": "Acme released Model Q with an open evaluation dataset."
+                }
+              ],
+              "trusted_domains": [
+                "acme.example"
+              ]
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Gộp items từ lượt đầu và domain sửa ở lượt cuối; bỏ preference cũ, không tự tìm nguồn mới. Unit test riêng kiểm tra nguồn nào thực sự được giữ."
+      },
       "turns": [
-        {"role": "user", "content": "Tóm tắt tweet mới nhất giúp mình"},
-        {"role": "user", "content": "Của OpenAI"},
-        {"role": "user", "content": "Lấy 2 cái thôi"}
-      ],
-      "failure_type": "missing_info",
-      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "openai", "limit": 2}}]},
-      "metadata": {"what_it_tests": "Handle bổ sung ở lượt 2 và limit ở lượt 3 phải được gộp vào một lời gọi timeline."}
+        {
+          "role": "user",
+          "content": "Kết quả đã thu thập là [{\"title\": \"Model Q release\", \"url\": \"https://x.com/reposter/status/123\", \"summary\": \"Acme released Model Q with an open evaluation dataset.\"}, {\"title\": \"Model Q release\", \"url\": \"https://acme.example/news/model-q\", \"summary\": \"Acme released Model Q with an open evaluation dataset.\"}]. Chưa chạy tool, mình sẽ bổ sung yêu cầu."
+        },
+        {
+          "role": "user",
+          "content": "Ưu tiên x.com khi chọn nguồn."
+        },
+        {
+          "role": "user",
+          "content": "Sửa lại: chỉ ưu tiên acme.example, không ưu tiên x.com nữa. Giờ loại trùng các kết quả trên, giữ nguyên dữ liệu đầu vào; chưa định dạng."
+        }
+      ]
     },
     {
       "id": "G07_multi_switch_web_to_social",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Tin AI hôm nay có gì?"},
-        {"role": "user", "content": "Thôi, mình muốn xem tweet chứ không phải tin web"},
-        {"role": "user", "content": "Chủ đề vẫn là AI, lấy bản mới nhất"}
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Thôi, mình muốn xem tweet chứ không phải tin web"
+        },
+        {
+          "role": "user",
+          "content": "Chủ đề vẫn là AI, lấy bản mới nhất"
+        }
       ],
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "AI", "search_type": "Latest"}}]},
-      "metadata": {"what_it_tests": "Đổi nguồn từ web sang tweet giữa chừng thì chuyển sang social_search với search_type=Latest."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI",
+              "search_type": "Latest"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Đổi nguồn từ web sang tweet giữa chừng thì chuyển sang social_search với search_type=Latest."
+      }
     },
     {
-      "id": "G08_multi_send_after_confirm",
-      "phase": "B", "suite": "group",
-      "turns": [
-        {"role": "user", "content": "Đăng bản tin lên Telegram giúp mình"},
-        {"role": "user", "content": "Nội dung: Chào buổi sáng cả nhà"},
-        {"role": "user", "content": "Ok, mình xác nhận, gửi đi"}
-      ],
+      "id": "G08_multi_changed_message_needs_approval",
+      "phase": "B",
+      "suite": "group",
       "failure_type": "wrong_boundary",
-      "expect": {"tool_calls": [{"name": "send", "args": {"confirmed": true}}]},
-      "metadata": {"what_it_tests": "Sau khi user xác nhận ở lượt cuối thì gọi send với confirmed=true."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Nội dung đổi sau approval: phải xin duyệt lại Bản tin B, không kế thừa approval cho A và không gọi send. Eval chỉ thực thi lượt cuối nên không publish."
+      },
+      "turns": [
+        {
+          "role": "user",
+          "content": "Mình muốn gửi lên Telegram đúng nội dung: Bản tin A."
+        },
+        {
+          "role": "assistant",
+          "content": "Bạn có xác nhận gửi chính xác nội dung \"Bản tin A.\" lên Telegram không?"
+        },
+        {
+          "role": "user",
+          "content": "Có, gửi Bản tin A."
+        },
+        {
+          "role": "user",
+          "content": "Khoan, chưa gửi. Đổi nội dung thành: Bản tin B. Hãy xin xác nhận lại trước khi gửi."
+        }
+      ]
     },
     {
       "id": "G09_multi_cite_markdown",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Mình vừa đọc bài https://anthropic.com/news/claude"},
-        {"role": "user", "content": "Tiêu đề là 'Claude mới', đăng ngày 2026-05-01"},
-        {"role": "user", "content": "Tạo trích dẫn cho bài đó dạng markdown"}
+        {
+          "role": "user",
+          "content": "Mình vừa đọc bài https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Tiêu đề là 'Claude mới', đăng ngày 2026-05-01"
+        },
+        {
+          "role": "user",
+          "content": "Tạo trích dẫn cho bài đó dạng markdown"
+        }
       ],
       "failure_type": "wrong_tool",
-      "expect": {"tool_calls": [{"name": "cite", "args": {"url": "https://anthropic.com/news/claude", "style": "markdown"}}]},
-      "metadata": {"what_it_tests": "Gộp url từ lượt 1 và style=markdown từ lượt 3 vào lời gọi cite."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "cite",
+            "args": {
+              "url": "https://anthropic.com/news/claude",
+              "style": "markdown",
+              "title": "Claude mới",
+              "date": "2026-05-01"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Gộp url từ lượt 1 và style=markdown từ lượt 3 vào lời gọi cite."
+      }
     },
     {
       "id": "G10_multi_timeframe_change",
-      "phase": "B", "suite": "group",
+      "phase": "B",
+      "suite": "group",
       "turns": [
-        {"role": "user", "content": "Tin về robotics trong tuần này"},
-        {"role": "user", "content": "Đổi sang tháng này"},
-        {"role": "user", "content": "Giữ chủ đề robotics"}
+        {
+          "role": "user",
+          "content": "Tin về robotics trong tuần này"
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang tháng này"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề robotics"
+        }
       ],
       "failure_type": "wrong_arg_value",
-      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "robotics", "topic": "news", "timeframe": "month"}}]},
-      "metadata": {"what_it_tests": "Sửa timeframe từ week sang month ở lượt giữa, giữ topic=news và query robotics."}
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Sửa timeframe từ week sang month ở lượt giữa, giữ topic=news và query robotics."
+      }
     }
   ]
 }
