@@ -3,7 +3,7 @@ __pycache__/
 *.py[cod]
 *.egg-info/
 .pytest_cache/
-.venv/
+starter_v0/venv
 
 # Secrets — never commit real keys
 .env
