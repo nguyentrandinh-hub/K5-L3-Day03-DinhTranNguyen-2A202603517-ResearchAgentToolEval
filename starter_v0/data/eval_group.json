@@ -1,7 +1,108 @@
 {
-  "dataset_id": "day04_v2_research_group",
+  "dataset_id": "day03_group_cases_anhtu",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
+  "description": "Case nhom tu viet: 5 single turn + 5 multi turn. Tap trung vao ranh gioi gui Telegram, ngoai pham vi, tool moi cite, va carry-over tham so.",
   "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "cases": [
+    {
+      "id": "G01_cite_routing",
+      "phase": "B", "suite": "group",
+      "query": "Tạo trích dẫn cho bài 'GPT-5 ra mắt' đăng ngày 2026-08-07, link https://openai.com/blog/gpt-5",
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "cite", "args": {"url": "https://openai.com/blog/gpt-5", "date": "2026-08-07"}}]},
+      "metadata": {"what_it_tests": "Đã có đủ title, url, date và user xin trích dẫn thì phải gọi cite, không gọi fetch hay lookup."}
+    },
+    {
+      "id": "G02_send_when_user_confirmed",
+      "phase": "B", "suite": "group",
+      "query": "Mình xác nhận rồi, gửi đúng câu này lên Telegram: Bản tin AI sáng nay đã sẵn sàng",
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "send", "args": {"confirmed": true}}]},
+      "metadata": {"what_it_tests": "Khi user đã xác nhận rõ trong cùng câu thì gọi send với confirmed=true, không hỏi lại thừa."}
+    },
+    {
+      "id": "G03_out_of_scope_translate",
+      "phase": "B", "suite": "group",
+      "query": "Dịch giúp mình câu 'good morning' sang tiếng Pháp",
+      "failure_type": "out_of_scope",
+      "expect": {"no_tool": true, "behavior": "refuse"},
+      "metadata": {"what_it_tests": "Dịch thuật nằm ngoài phạm vi research nên không được gọi tool."}
+    },
+    {
+      "id": "G04_thanks_no_tool",
+      "phase": "B", "suite": "group",
+      "query": "Cảm ơn bạn nhé, hôm nay vậy là đủ rồi",
+      "failure_type": "unnecessary_tool",
+      "expect": {"no_tool": true, "behavior": "answer_without_tool"},
+      "metadata": {"what_it_tests": "Lời cảm ơn xã giao thì trả lời thẳng, không gọi tool."}
+    },
+    {
+      "id": "G05_papers_latest_count",
+      "phase": "B", "suite": "group",
+      "query": "Tìm 3 paper arXiv mới nhất về AI agents",
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "papers", "args": {"max_results": 3, "sort_by": "submittedDate"}}]},
+      "metadata": {"what_it_tests": "'3 paper' thành max_results=3 và 'mới nhất' thành sort_by=submittedDate."}
+    },
+    {
+      "id": "G06_multi_clarify_handle_limit",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tóm tắt tweet mới nhất giúp mình"},
+        {"role": "user", "content": "Của OpenAI"},
+        {"role": "user", "content": "Lấy 2 cái thôi"}
+      ],
+      "failure_type": "missing_info",
+      "expect": {"tool_calls": [{"name": "timeline", "args": {"screenname": "openai", "limit": 2}}]},
+      "metadata": {"what_it_tests": "Handle bổ sung ở lượt 2 và limit ở lượt 3 phải được gộp vào một lời gọi timeline."}
+    },
+    {
+      "id": "G07_multi_switch_web_to_social",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tin AI hôm nay có gì?"},
+        {"role": "user", "content": "Thôi, mình muốn xem tweet chứ không phải tin web"},
+        {"role": "user", "content": "Chủ đề vẫn là AI, lấy bản mới nhất"}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "social_search", "args": {"query": "AI", "search_type": "Latest"}}]},
+      "metadata": {"what_it_tests": "Đổi nguồn từ web sang tweet giữa chừng thì chuyển sang social_search với search_type=Latest."}
+    },
+    {
+      "id": "G08_multi_send_after_confirm",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Đăng bản tin lên Telegram giúp mình"},
+        {"role": "user", "content": "Nội dung: Chào buổi sáng cả nhà"},
+        {"role": "user", "content": "Ok, mình xác nhận, gửi đi"}
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {"tool_calls": [{"name": "send", "args": {"confirmed": true}}]},
+      "metadata": {"what_it_tests": "Sau khi user xác nhận ở lượt cuối thì gọi send với confirmed=true."}
+    },
+    {
+      "id": "G09_multi_cite_markdown",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Mình vừa đọc bài https://anthropic.com/news/claude"},
+        {"role": "user", "content": "Tiêu đề là 'Claude mới', đăng ngày 2026-05-01"},
+        {"role": "user", "content": "Tạo trích dẫn cho bài đó dạng markdown"}
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {"tool_calls": [{"name": "cite", "args": {"url": "https://anthropic.com/news/claude", "style": "markdown"}}]},
+      "metadata": {"what_it_tests": "Gộp url từ lượt 1 và style=markdown từ lượt 3 vào lời gọi cite."}
+    },
+    {
+      "id": "G10_multi_timeframe_change",
+      "phase": "B", "suite": "group",
+      "turns": [
+        {"role": "user", "content": "Tin về robotics trong tuần này"},
+        {"role": "user", "content": "Đổi sang tháng này"},
+        {"role": "user", "content": "Giữ chủ đề robotics"}
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {"tool_calls": [{"name": "lookup", "args": {"query": "robotics", "topic": "news", "timeframe": "month"}}]},
+      "metadata": {"what_it_tests": "Sửa timeframe từ week sang month ở lượt giữa, giữ topic=news và query robotics."}
+    }
+  ]
 }

@@ -110,13 +110,35 @@ def test_policy_instruction_like_lines_go_to_untrusted_text() -> None:
 #   2. bad / missing input from the model (empty string, wrong type, out-of-enum value)
 #   3. failure path (missing key, HTTP error, timeout) -> returns error dict, does not raise
 
-def test_my_new_tool_happy_path() -> None:
-    pytest.skip(TODO)
+def test_cite_plain_builds_citation_from_title_url_date() -> None:
+    result = TOOL_FUNCTIONS["cite"](title="GPT-5 ra mắt", url="https://www.openai.com/blog/gpt-5", date="2026-08-07")
+
+    assert result["style"] == "plain"
+    assert result["citation"] == "GPT-5 ra mắt. openai.com. 2026-08-07. https://www.openai.com/blog/gpt-5"
 
 
-def test_my_new_tool_bad_input_from_model() -> None:
-    pytest.skip(TODO)
+def test_cite_markdown_links_title_to_url() -> None:
+    result = TOOL_FUNCTIONS["cite"](title="GPT-5", url="https://openai.com/x", date="2026-08-07", style="markdown")
+
+    assert result["citation"] == "[GPT-5](https://openai.com/x) - openai.com, 2026-08-07"
 
 
-def test_my_new_tool_failure_returns_error_dict() -> None:
-    pytest.skip(TODO)
+def test_cite_url_only_derives_source_from_domain() -> None:
+    result = TOOL_FUNCTIONS["cite"](url="https://www.example.com/post")
+
+    assert result["citation"] == "https://www.example.com/post. example.com"
+
+
+def test_cite_bad_input_from_model_returns_error_dict_not_raise() -> None:
+    cite = TOOL_FUNCTIONS["cite"]
+
+    assert cite()["error"] == "missing_input"
+    assert cite(title=None, url=None)["error"] == "missing_input"
+    assert cite(title="x", style="apa")["error"] == "invalid_style"
+
+
+def test_cite_never_calls_network(fake_http) -> None:
+    calls = fake_http(FakeResponse({}))
+    TOOL_FUNCTIONS["cite"](title="x", url="https://example.com")
+
+    assert calls == []
