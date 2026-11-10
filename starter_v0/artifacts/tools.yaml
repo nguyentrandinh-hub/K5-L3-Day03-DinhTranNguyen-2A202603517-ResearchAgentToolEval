@@ -151,3 +151,25 @@ tools:
         source: {type: string, default: "", description: "Known publisher/source name; defaults to URL domain when omitted."}
         date: {type: string, default: "", description: "Known publication date; preserve the provided date and do not infer it."}
         style: {type: string, enum: [plain, markdown], default: "plain", description: "plain for text citation; markdown for a linked citation."}
+  - name: save_digest
+    description: >
+      Save a completed AI news digest as a Markdown file.
+      Only call this tool after the user explicitly confirms saving.
+      If confirmation is missing, ask the user first.
+      Never save automatically.
+    parameters:
+      type: object
+      properties:
+        title:
+          type: string
+          description: Title of the AI news digest.
+        content:
+          type: string
+          description: Complete Markdown content of the digest.
+        confirmed:
+          type: boolean
+          description: Set true only after explicit user confirmation.
+      required:
+        - title
+        - content
+        - confirmed

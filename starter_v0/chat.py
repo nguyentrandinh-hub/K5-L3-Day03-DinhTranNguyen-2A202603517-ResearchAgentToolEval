@@ -113,7 +113,35 @@ def run_model_tool_loop(
 
         for call in calls:
             print(f"🔧 {call.name}({json.dumps(call.args, ensure_ascii=False, sort_keys=True)})")
-            event = execute_tool_call(call)
+            if call.name == "save_digest":
+                title = call.args.get("title", "")
+                content = call.args.get("content", "")
+
+                print(f"\nAgent requests saving digest: {title}")
+                print(f"Content preview:\n{content}\n")
+
+                approval = input("Approve saving this digest? (yes/no): ").strip().lower()
+
+                if approval in {"yes", "y"}:
+                    event = execute_tool_call(
+                        ToolCall(
+                            "save_digest",
+                            {
+                                "title": title,
+                                "content": content,
+                                "confirmed": True,
+                            },
+                        )
+                    )
+                else:
+                    event = {
+                        "tool": "save_digest",
+                        "args": {"title": title, "confirmed": False},
+                        "result": {"status": "cancelled", "message": "User did not approve saving."},
+                    }
+            else:
+                event = execute_tool_call(call)
+            
             round_record["tool_results"].append(event)
             all_tool_events.append(event)
 

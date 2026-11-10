@@ -1,0 +1,808 @@
+{
+  "transcript_id": "v2_openrouter_20261110T124738364162",
+  "version": "v2",
+  "artifact_version": "v2+p76045d78b51d+t5cd81a954d99",
+  "prompt_hash": "76045d78b51de48bbf88513fdbd0eef43fcf773fb45b2458a43f4af88e7c2cc7",
+  "tools_hash": "5cd81a954d9935c16e3ec6d07539e8844d21c1726208c8a41ca4bcde0eba38b7",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "D:\\CLionProjects\\Vinno\\Code\\LAB_VIN\\10_11\\K5-L3-Day03-DinhTranNguyen-2A202603517-ResearchAgentToolEval\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "D:\\CLionProjects\\Vinno\\Code\\LAB_VIN\\10_11\\K5-L3-Day03-DinhTranNguyen-2A202603517-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "history_window": 5,
+  "max_tool_rounds": 6,
+  "created_at": "2026-11-10T12:47:38",
+  "updated_at": "2026-11-10T12:54:07",
+  "turns": [
+    {
+      "turn_index": 1,
+      "started_at": "2026-11-10T12:47:42",
+      "user": "hello",
+      "status": "answered",
+      "assistant_text": "Hello! How can I assist you today?",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": "Hello! How can I assist you today?",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [],
+      "ended_at": "2026-11-10T12:47:45"
+    },
+    {
+      "turn_index": 2,
+      "started_at": "2026-11-10T12:47:54",
+      "user": "cho tôi thông tin về AI robotics hôm nay",
+      "status": "answered",
+      "assistant_text": "Here are the latest updates on AI robotics from today:\n\n### News Articles\n1. **[Recent advances in AI are creating a 'paradigm shift' for robotics](https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics)** - Berkeley News  \n   Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots.  \n   *Source: Berkeley News*\n\n2. **[A Way to Invest in AI and Robotics Together](https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time)** - MarketWise  \n   The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency.  \n   *Source: MarketWise*\n\n3. **[NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines](https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer)** - Interesting Engineering  \n   NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations.  \n   *Source: Interesting Engineering*\n\n4. **[Physical AI: Robotics Heading Into 2027](https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027)** - Seeking Alpha  \n   This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027.  \n   *Source: Seeking Alpha*\n\n5. **[Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously](https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar)** - Universe Today  \n   Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions.  \n   *Source: Universe Today*\n\n### Recent Tweets\n1. **[@0xsmalldas](https://x.com/0xsmalldas/status/2120030636123775155)**  \n   \"Ground truth data is the foundation for safe, adaptive robotics. Night vs. day reveals how lighting, shadows, and human behavior change, critical for real-world AI.\"\n\n2. **[@Mochi001012](https://x.com/Mochi001012/status/2120030595954942227)**  \n   \"🤖📦 Humanoid robots meet logistics automation! Unitree G1-D demonstrates package handling alongside an automated conveyor system.\"\n\n3. **[@arundhati1504](https://x.com/arundhati1504/status/2120030488937308475)**  \n   \"Headed to #CoRL2026? Join NVIDIA’s Jim Fan at CoRL 2026 to explore how world models and agentic robotics can bring frontier AI into the physical world.\"\n\n4. **[@JSnorzy](https://x.com/JSnorzy/status/2120029976548237742)**  \n   \"Nah Ukraine is too vulnerable for a small population that has aged. Same with China; you could always argue for letting the population fall to 100 million Chinese after all AI and robotics will solve everything.\"\n\n5. **[@catqpx](https://x.com/catqpx/status/2120029666685981109)**  \n   \"Impressive how VanGrid combines human input with AI to enhance spatial awareness in robotics.\"\n\nIf you need more information or specific details, feel free to ask!",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "lookup",
+              "args": {
+                "query": "AI robotics",
+                "topic": "news",
+                "timeframe": "day",
+                "max_results": 5
+              }
+            },
+            {
+              "name": "social_search",
+              "args": {
+                "query": "AI robotics",
+                "search_type": "Latest",
+                "limit": 5
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "lookup",
+              "args": {
+                "query": "AI robotics",
+                "topic": "news",
+                "timeframe": "day",
+                "max_results": 5
+              },
+              "result": {
+                "tool": "web_search",
+                "query": "AI robotics",
+                "topic": "news",
+                "timeframe": "day",
+                "items": [
+                  {
+                    "title": "Recent advances in AI are creating a 'paradigm shift' for robotics - Berkeley News",
+                    "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                    "source": "news.berkeley.edu",
+                    "summary": "The researchers then gave the AI that simulation and their Graph-as-Policy framework. The AI generated a robot-control program and repeatedly tested and improved it in simulation. When the researchers ran the resulting code on a real robot, it worked.\n\nSix illustrations showing a robotic claw doing various industrial tasks, including hanging items on a wall and pulling cables through different configurations. [...] “AI-powered industrial robots must continuously improve reliability and performance,” said Jeff Mahler, Ambi Robotics’ co-founder and chief technology officer. “Agentic robotics converted production data into robot behavior updates, increasing throughput across our U.S. fleet while keeping engineers in control.” [...] Ken Goldberg, a UC Berkeley roboticist and professor of engineering, said new models make it possible for teams of AI agents to develop robot-control programs, test them in simulated environments and revise the code when something doesn’t work.",
+                    "score": 0.76152116
+                  },
+                  {
+                    "title": "A Way to Invest in AI and Robotics Together",
+                    "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                    "source": "marketwise.com",
+                    "summary": "Avid Money & Megatrends readers know that we believe AI and robotics are two of the biggest business and investment trends of the 21st century. They will revolutionize the way we work and play as much as electricity or the automobile did… while creating huge stock market winners along the way.\n\nTech giant Amazon is uniquely positioned to benefit from both technologies. [...] Amazon operates more than 1,000 warehouses in the U.S. It ships millions of packages across millions of miles every month. This blizzard of activity can become more efficient and profitable with AI-enhanced logistics and robots that don’t complain, don’t take coffee breaks, and don’t ask for raises.\n\nIn other words, Amazon is uniquely well-suited to benefit from a megatrend in which robots soon become cheaper, faster, more dexterous, more durable, and smarter. [...] With demand for AI computing power soaring, restrictions on new supply could mean higher prices, greater utilization, and fatter profit margins for AWS.\n\nIn other words, Amazon is living up to the label we gave it early this year, when we said the stock was “the best way to invest in AI and robotics at the same time.”",
+                    "score": 0.68318754
+                  },
+                  {
+                    "title": "NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines",
+                    "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                    "source": "interestingengineering.com",
+                    "summary": "AI and RoboticsMuse Ember: Meta unveils its smallest model yet with 1M-token context for cheaper agents\n\nClaude Fable 5.2 builds a working operating system with 1,000 agents in eight days\n\nAI and RoboticsClaude Fable 5.2 builds a working operating system with 1,000 agents in eight days [...] AI and Robotics\n\n# NVIDIA’s GR00T 2 transfers human skills to robots with just five task demonstrations\n\nNVIDIA’s GR00T 2 learns physical tasks from human videos and other robots, achieving 95% success after five demonstrations per task.\n\nRead Next: Claude Fable 5.2 builds a working operating system with 1,000 agents in eight days\n\nByNeetika Walter\n\nAI and Robotics\n\nFacebookLinkedInXReddit\n\nGoogle News Preferred Source\n\nByNeetika Walter\n\nFacebookLinkedInXReddit\n\nGoogle News Preferred Source [...] Video: Boston Dynamics put wheels on Atlas, and now it’s pulling off 360-degree jumps\n\nAI and RoboticsVideo: Boston Dynamics put wheels on Atlas, and now it’s pulling off 360-degree jumps\n\nOpenAI launches Control Room with a powerful 35-second kill switch for rogue agents\n\nAI and RoboticsOpenAI launches Control Room with a powerful 35-second kill switch for rogue agents\n\nMuse Ember: Meta unveils its smallest model yet with 1M-token context for cheaper agents",
+                    "score": 0.5746579
+                  },
+                  {
+                    "title": "Physical AI: Robotics Heading Into 2027 | Seeking Alpha",
+                    "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                    "source": "seekingalpha.com",
+                    "summary": "## Investing Groups\n\n## Portfolios\n\n## Find & Compare\n\n# Physical AI: Robotics Heading Into 2027\n\n## Summary\n\nAdvanced robotics operates in a high-tech assembly line for electronic devices at a manufacturing facility. 3D illustration \n\nadventtr/iStock via Getty Images\n\nAdvanced robotics operates in a high-tech assembly line for electronic devices at a manufacturing facility. 3D illustration\n\nadventtr/iStock via Getty Images [...] Physical AI takes AI beyond data centers into factories and warehouses. See how IBOT owns the whole robot value chain, from machines and vision to design software and chips, heading into 2027.\n\n## AI is moving\n\nThis article was written by\n\n## Quick Insights\n\n### How does IBOT's value chain exposure position it versus other robotics ETFs?\n\n### What are the key demand drivers for IBOT heading into 2027?\n\n### How does IBOT's recent performance and cost compare to peers?\n\n### Recommended For You",
+                    "score": 0.532839
+                  },
+                  {
+                    "title": "Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously - Universe Today",
+                    "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                    "source": "universetoday.com",
+                    "summary": "As they indicate in their paper, estimating the burial depth of partially embedded rocks is a key capability for energy-limited robotic excavation. When obstacles like rock formations are in the way, mission teams need to know how deep the rock extends so they can decide whether to remove the obstacle or avoid it. Ruan and Komendera's solution leverages AI to interpret vibrational data, allowing robots to make those decisions autonomously. As Komendera said in a Virginia Tech press release: [...] In short, scientists and astronauts need to know what's on a planet's surface (and beneath it) before they attempt to land there and conduct science operations. Thanks to a team from Virginia Polytechnic Institute and State University (Virginia Tech), scientists could soon have a new set of tools that will allow robotic missions to make these determinations autonomously. These AI-powered tools measure vibrations in surface terrain to determine what lies beneath and how deep structures extend. [...] These models could help robotic missions excavate subsurface rocks, caches of water ice, and remove obstacles along their travel routes. In the meantime, the team plans to keep building datasets and testing their approach for applications on Earth, such as analyzing construction sites and natural disasters to locate where potentially hazardous materials are buried. They could also be used to study unstable rock formations and underground caverns, assisting with resource and construction",
+                    "score": 0.50886196
+                  }
+                ]
+              }
+            },
+            {
+              "tool": "social_search",
+              "args": {
+                "query": "AI robotics",
+                "search_type": "Latest",
+                "limit": 5
+              },
+              "result": {
+                "tool": "search_tweets",
+                "query": "AI robotics",
+                "search_type": "Latest",
+                "items": [
+                  {
+                    "title": "@RosecryptoXx @vangrid_io Ground truth data is the foundation for safe, adaptive robotics. Night vs. day reveals how lig",
+                    "summary": "@RosecryptoXx @vangrid_io Ground truth data is the foundation for safe, adaptive robotics. Night vs. day reveals how lighting, shadows, and human behavior change, critical for realworld AI. This isn’t just mapping it’s building intelligence that sees like we do.",
+                    "url": "https://x.com/0xsmalldas/status/2120030636123775155",
+                    "source": "@0xsmalldas",
+                    "date": "Tue Nov 10 05:47:46 +0000 2026",
+                    "metrics": {
+                      "favorites": 0,
+                      "retweets": 0,
+                      "views": "1"
+                    }
+                  },
+                  {
+                    "title": "🤖📦 Humanoid robots meet logistics automation!",
+                    "summary": "🤖📦 Humanoid robots meet logistics automation!\n\nUnitree G1-D demonstrates package handling alongside an automated conveyor system, exploring new possibilities for smart warehouses.\n\n#UnitreeG1D #Robotics #LogisticsAutomation #AI #WarehouseAutomation https://t.co/ZoPn1ODLEX",
+                    "url": "https://x.com/Mochi001012/status/2120030595954942227",
+                    "source": "@Mochi001012",
+                    "date": "Tue Nov 10 05:47:36 +0000 2026",
+                    "metrics": {
+                      "favorites": 1,
+                      "retweets": 0,
+                      "views": "1"
+                    }
+                  },
+                  {
+                    "title": "Headed to #CoRL2026? Join NVIDIA’s Jim Fan at CoRL 2026 to explore how world models, robot foundation models, and agenti",
+                    "summary": "Headed to #CoRL2026? Join NVIDIA’s Jim Fan at CoRL 2026 to explore how world models, robot foundation models, and agentic robotics can bring frontier AI into the physical world.  https://t.co/lB5Oc4YDGU",
+                    "url": "https://x.com/arundhati1504/status/2120030488937308475",
+                    "source": "@arundhati1504",
+                    "date": "Tue Nov 10 05:47:11 +0000 2026",
+                    "metrics": {
+                      "favorites": 0,
+                      "retweets": 0,
+                      "views": "1"
+                    }
+                  },
+                  {
+                    "title": "@cnw20xx Nah Ukraine is too vulnerable for a small population that has aged ",
+                    "summary": "@cnw20xx Nah Ukraine is too vulnerable for a small population that has aged \n\nSame with china you could always argue for letting the population fall to 100 million Chinese after all ai and robotics will solve everything",
+                    "url": "https://x.com/JSnorzy/status/2120029976548237742",
+                    "source": "@JSnorzy",
+                    "date": "Tue Nov 10 05:45:09 +0000 2026",
+                    "metrics": {
+                      "favorites": 1,
+                      "retweets": 0,
+                      "views": "3"
+                    }
+                  },
+                  {
+                    "title": "@sheikhakash69 impressive how VanGrid combines human input with AI to enhance spatial awareness in robotics.",
+                    "summary": "@sheikhakash69 impressive how VanGrid combines human input with AI to enhance spatial awareness in robotics.",
+                    "url": "https://x.com/catqpx/status/2120029666685981109",
+                    "source": "@catqpx",
+                    "date": "Tue Nov 10 05:43:55 +0000 2026",
+                    "metrics": {
+                      "favorites": 0,
+                      "retweets": 0,
+                      "views": null
+                    }
+                  }
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "assistant_text": "Here are the latest updates on AI robotics from today:\n\n### News Articles\n1. **[Recent advances in AI are creating a 'paradigm shift' for robotics](https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics)** - Berkeley News  \n   Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots.  \n   *Source: Berkeley News*\n\n2. **[A Way to Invest in AI and Robotics Together](https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time)** - MarketWise  \n   The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency.  \n   *Source: MarketWise*\n\n3. **[NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines](https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer)** - Interesting Engineering  \n   NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations.  \n   *Source: Interesting Engineering*\n\n4. **[Physical AI: Robotics Heading Into 2027](https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027)** - Seeking Alpha  \n   This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027.  \n   *Source: Seeking Alpha*\n\n5. **[Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously](https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar)** - Universe Today  \n   Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions.  \n   *Source: Universe Today*\n\n### Recent Tweets\n1. **[@0xsmalldas](https://x.com/0xsmalldas/status/2120030636123775155)**  \n   \"Ground truth data is the foundation for safe, adaptive robotics. Night vs. day reveals how lighting, shadows, and human behavior change, critical for real-world AI.\"\n\n2. **[@Mochi001012](https://x.com/Mochi001012/status/2120030595954942227)**  \n   \"🤖📦 Humanoid robots meet logistics automation! Unitree G1-D demonstrates package handling alongside an automated conveyor system.\"\n\n3. **[@arundhati1504](https://x.com/arundhati1504/status/2120030488937308475)**  \n   \"Headed to #CoRL2026? Join NVIDIA’s Jim Fan at CoRL 2026 to explore how world models and agentic robotics can bring frontier AI into the physical world.\"\n\n4. **[@JSnorzy](https://x.com/JSnorzy/status/2120029976548237742)**  \n   \"Nah Ukraine is too vulnerable for a small population that has aged. Same with China; you could always argue for letting the population fall to 100 million Chinese after all AI and robotics will solve everything.\"\n\n5. **[@catqpx](https://x.com/catqpx/status/2120029666685981109)**  \n   \"Impressive how VanGrid combines human input with AI to enhance spatial awareness in robotics.\"\n\nIf you need more information or specific details, feel free to ask!",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI robotics",
+            "topic": "news",
+            "timeframe": "day",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI robotics",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Recent advances in AI are creating a 'paradigm shift' for robotics - Berkeley News",
+                "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                "source": "news.berkeley.edu",
+                "summary": "The researchers then gave the AI that simulation and their Graph-as-Policy framework. The AI generated a robot-control program and repeatedly tested and improved it in simulation. When the researchers ran the resulting code on a real robot, it worked.\n\nSix illustrations showing a robotic claw doing various industrial tasks, including hanging items on a wall and pulling cables through different configurations. [...] “AI-powered industrial robots must continuously improve reliability and performance,” said Jeff Mahler, Ambi Robotics’ co-founder and chief technology officer. “Agentic robotics converted production data into robot behavior updates, increasing throughput across our U.S. fleet while keeping engineers in control.” [...] Ken Goldberg, a UC Berkeley roboticist and professor of engineering, said new models make it possible for teams of AI agents to develop robot-control programs, test them in simulated environments and revise the code when something doesn’t work.",
+                "score": 0.76152116
+              },
+              {
+                "title": "A Way to Invest in AI and Robotics Together",
+                "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                "source": "marketwise.com",
+                "summary": "Avid Money & Megatrends readers know that we believe AI and robotics are two of the biggest business and investment trends of the 21st century. They will revolutionize the way we work and play as much as electricity or the automobile did… while creating huge stock market winners along the way.\n\nTech giant Amazon is uniquely positioned to benefit from both technologies. [...] Amazon operates more than 1,000 warehouses in the U.S. It ships millions of packages across millions of miles every month. This blizzard of activity can become more efficient and profitable with AI-enhanced logistics and robots that don’t complain, don’t take coffee breaks, and don’t ask for raises.\n\nIn other words, Amazon is uniquely well-suited to benefit from a megatrend in which robots soon become cheaper, faster, more dexterous, more durable, and smarter. [...] With demand for AI computing power soaring, restrictions on new supply could mean higher prices, greater utilization, and fatter profit margins for AWS.\n\nIn other words, Amazon is living up to the label we gave it early this year, when we said the stock was “the best way to invest in AI and robotics at the same time.”",
+                "score": 0.68318754
+              },
+              {
+                "title": "NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines",
+                "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                "source": "interestingengineering.com",
+                "summary": "AI and RoboticsMuse Ember: Meta unveils its smallest model yet with 1M-token context for cheaper agents\n\nClaude Fable 5.2 builds a working operating system with 1,000 agents in eight days\n\nAI and RoboticsClaude Fable 5.2 builds a working operating system with 1,000 agents in eight days [...] AI and Robotics\n\n# NVIDIA’s GR00T 2 transfers human skills to robots with just five task demonstrations\n\nNVIDIA’s GR00T 2 learns physical tasks from human videos and other robots, achieving 95% success after five demonstrations per task.\n\nRead Next: Claude Fable 5.2 builds a working operating system with 1,000 agents in eight days\n\nByNeetika Walter\n\nAI and Robotics\n\nFacebookLinkedInXReddit\n\nGoogle News Preferred Source\n\nByNeetika Walter\n\nFacebookLinkedInXReddit\n\nGoogle News Preferred Source [...] Video: Boston Dynamics put wheels on Atlas, and now it’s pulling off 360-degree jumps\n\nAI and RoboticsVideo: Boston Dynamics put wheels on Atlas, and now it’s pulling off 360-degree jumps\n\nOpenAI launches Control Room with a powerful 35-second kill switch for rogue agents\n\nAI and RoboticsOpenAI launches Control Room with a powerful 35-second kill switch for rogue agents\n\nMuse Ember: Meta unveils its smallest model yet with 1M-token context for cheaper agents",
+                "score": 0.5746579
+              },
+              {
+                "title": "Physical AI: Robotics Heading Into 2027 | Seeking Alpha",
+                "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                "source": "seekingalpha.com",
+                "summary": "## Investing Groups\n\n## Portfolios\n\n## Find & Compare\n\n# Physical AI: Robotics Heading Into 2027\n\n## Summary\n\nAdvanced robotics operates in a high-tech assembly line for electronic devices at a manufacturing facility. 3D illustration \n\nadventtr/iStock via Getty Images\n\nAdvanced robotics operates in a high-tech assembly line for electronic devices at a manufacturing facility. 3D illustration\n\nadventtr/iStock via Getty Images [...] Physical AI takes AI beyond data centers into factories and warehouses. See how IBOT owns the whole robot value chain, from machines and vision to design software and chips, heading into 2027.\n\n## AI is moving\n\nThis article was written by\n\n## Quick Insights\n\n### How does IBOT's value chain exposure position it versus other robotics ETFs?\n\n### What are the key demand drivers for IBOT heading into 2027?\n\n### How does IBOT's recent performance and cost compare to peers?\n\n### Recommended For You",
+                "score": 0.532839
+              },
+              {
+                "title": "Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously - Universe Today",
+                "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                "source": "universetoday.com",
+                "summary": "As they indicate in their paper, estimating the burial depth of partially embedded rocks is a key capability for energy-limited robotic excavation. When obstacles like rock formations are in the way, mission teams need to know how deep the rock extends so they can decide whether to remove the obstacle or avoid it. Ruan and Komendera's solution leverages AI to interpret vibrational data, allowing robots to make those decisions autonomously. As Komendera said in a Virginia Tech press release: [...] In short, scientists and astronauts need to know what's on a planet's surface (and beneath it) before they attempt to land there and conduct science operations. Thanks to a team from Virginia Polytechnic Institute and State University (Virginia Tech), scientists could soon have a new set of tools that will allow robotic missions to make these determinations autonomously. These AI-powered tools measure vibrations in surface terrain to determine what lies beneath and how deep structures extend. [...] These models could help robotic missions excavate subsurface rocks, caches of water ice, and remove obstacles along their travel routes. In the meantime, the team plans to keep building datasets and testing their approach for applications on Earth, such as analyzing construction sites and natural disasters to locate where potentially hazardous materials are buried. They could also be used to study unstable rock formations and underground caverns, assisting with resource and construction",
+                "score": 0.50886196
+              }
+            ]
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI robotics",
+            "search_type": "Latest",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "AI robotics",
+            "search_type": "Latest",
+            "items": [
+              {
+                "title": "@RosecryptoXx @vangrid_io Ground truth data is the foundation for safe, adaptive robotics. Night vs. day reveals how lig",
+                "summary": "@RosecryptoXx @vangrid_io Ground truth data is the foundation for safe, adaptive robotics. Night vs. day reveals how lighting, shadows, and human behavior change, critical for realworld AI. This isn’t just mapping it’s building intelligence that sees like we do.",
+                "url": "https://x.com/0xsmalldas/status/2120030636123775155",
+                "source": "@0xsmalldas",
+                "date": "Tue Nov 10 05:47:46 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "1"
+                }
+              },
+              {
+                "title": "🤖📦 Humanoid robots meet logistics automation!",
+                "summary": "🤖📦 Humanoid robots meet logistics automation!\n\nUnitree G1-D demonstrates package handling alongside an automated conveyor system, exploring new possibilities for smart warehouses.\n\n#UnitreeG1D #Robotics #LogisticsAutomation #AI #WarehouseAutomation https://t.co/ZoPn1ODLEX",
+                "url": "https://x.com/Mochi001012/status/2120030595954942227",
+                "source": "@Mochi001012",
+                "date": "Tue Nov 10 05:47:36 +0000 2026",
+                "metrics": {
+                  "favorites": 1,
+                  "retweets": 0,
+                  "views": "1"
+                }
+              },
+              {
+                "title": "Headed to #CoRL2026? Join NVIDIA’s Jim Fan at CoRL 2026 to explore how world models, robot foundation models, and agenti",
+                "summary": "Headed to #CoRL2026? Join NVIDIA’s Jim Fan at CoRL 2026 to explore how world models, robot foundation models, and agentic robotics can bring frontier AI into the physical world.  https://t.co/lB5Oc4YDGU",
+                "url": "https://x.com/arundhati1504/status/2120030488937308475",
+                "source": "@arundhati1504",
+                "date": "Tue Nov 10 05:47:11 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "1"
+                }
+              },
+              {
+                "title": "@cnw20xx Nah Ukraine is too vulnerable for a small population that has aged ",
+                "summary": "@cnw20xx Nah Ukraine is too vulnerable for a small population that has aged \n\nSame with china you could always argue for letting the population fall to 100 million Chinese after all ai and robotics will solve everything",
+                "url": "https://x.com/JSnorzy/status/2120029976548237742",
+                "source": "@JSnorzy",
+                "date": "Tue Nov 10 05:45:09 +0000 2026",
+                "metrics": {
+                  "favorites": 1,
+                  "retweets": 0,
+                  "views": "3"
+                }
+              },
+              {
+                "title": "@sheikhakash69 impressive how VanGrid combines human input with AI to enhance spatial awareness in robotics.",
+                "summary": "@sheikhakash69 impressive how VanGrid combines human input with AI to enhance spatial awareness in robotics.",
+                "url": "https://x.com/catqpx/status/2120029666685981109",
+                "source": "@catqpx",
+                "date": "Tue Nov 10 05:43:55 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              }
+            ]
+          }
+        }
+      ],
+      "ended_at": "2026-11-10T12:48:13"
+    },
+    {
+      "turn_index": 3,
+      "started_at": "2026-11-10T12:51:39",
+      "user": "Hãy sử dụng các tin tức AI robotics vừa tìm được, loại bỏ nội dung trùng lặp, tạo một bản tin Markdown có tiêu đề, nội dung tóm tắt và URL nguồn. Sau đó đề xuất lưu bản tin bằng công cụ save_digest.",
+      "status": "answered",
+      "assistant_text": "Trước khi lưu bản tin, mình cần bạn xác nhận. Dưới đây là nội dung bản tin:\n\n# Bản tin AI Robotics Ngày Hôm Nay\n\n## Tổng hợp\n- Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots. - [Berkeley News](https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics)\n- The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency. - [MarketWise](https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time)\n- NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations. - [Interesting Engineering](https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer)\n- This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027. - [Seeking Alpha](https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027)\n- Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions. - [Universe Today](https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar)\n\nBạn có xác nhận muốn lưu bản tin này không?",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "clean_results",
+              "args": {
+                "items": [
+                  {
+                    "title": "Recent advances in AI are creating a 'paradigm shift' for robotics",
+                    "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                    "source": "Berkeley News",
+                    "summary": "Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots."
+                  },
+                  {
+                    "title": "A Way to Invest in AI and Robotics Together",
+                    "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                    "source": "MarketWise",
+                    "summary": "The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency."
+                  },
+                  {
+                    "title": "NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines",
+                    "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                    "source": "Interesting Engineering",
+                    "summary": "NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations."
+                  },
+                  {
+                    "title": "Physical AI: Robotics Heading Into 2027",
+                    "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                    "source": "Seeking Alpha",
+                    "summary": "This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027."
+                  },
+                  {
+                    "title": "Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously",
+                    "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                    "source": "Universe Today",
+                    "summary": "Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions."
+                  }
+                ]
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "clean_results",
+              "args": {
+                "items": [
+                  {
+                    "title": "Recent advances in AI are creating a 'paradigm shift' for robotics",
+                    "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                    "source": "Berkeley News",
+                    "summary": "Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots."
+                  },
+                  {
+                    "title": "A Way to Invest in AI and Robotics Together",
+                    "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                    "source": "MarketWise",
+                    "summary": "The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency."
+                  },
+                  {
+                    "title": "NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines",
+                    "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                    "source": "Interesting Engineering",
+                    "summary": "NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations."
+                  },
+                  {
+                    "title": "Physical AI: Robotics Heading Into 2027",
+                    "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                    "source": "Seeking Alpha",
+                    "summary": "This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027."
+                  },
+                  {
+                    "title": "Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously",
+                    "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                    "source": "Universe Today",
+                    "summary": "Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions."
+                  }
+                ]
+              },
+              "result": {
+                "tool": "clean_results",
+                "items": [
+                  {
+                    "title": "Recent advances in AI are creating a 'paradigm shift' for robotics",
+                    "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                    "source": "Berkeley News",
+                    "summary": "Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots."
+                  },
+                  {
+                    "title": "A Way to Invest in AI and Robotics Together",
+                    "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                    "source": "MarketWise",
+                    "summary": "The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency."
+                  },
+                  {
+                    "title": "NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines",
+                    "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                    "source": "Interesting Engineering",
+                    "summary": "NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations."
+                  },
+                  {
+                    "title": "Physical AI: Robotics Heading Into 2027",
+                    "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                    "source": "Seeking Alpha",
+                    "summary": "This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027."
+                  },
+                  {
+                    "title": "Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously",
+                    "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                    "source": "Universe Today",
+                    "summary": "Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions."
+                  }
+                ],
+                "input_count": 5,
+                "item_count": 5,
+                "removed_count": 0,
+                "removed": [],
+                "source_assessments": [
+                  {
+                    "index": 0,
+                    "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                    "rank": 3,
+                    "reason": "Recognized primary/institutional domain; relevance and claims still need review"
+                  },
+                  {
+                    "index": 1,
+                    "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                    "rank": 1,
+                    "reason": "Unclassified source; no automatic verification"
+                  },
+                  {
+                    "index": 2,
+                    "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                    "rank": 1,
+                    "reason": "Unclassified source; no automatic verification"
+                  },
+                  {
+                    "index": 3,
+                    "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                    "rank": 1,
+                    "reason": "Unclassified source; no automatic verification"
+                  },
+                  {
+                    "index": 4,
+                    "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                    "rank": 1,
+                    "reason": "Unclassified source; no automatic verification"
+                  }
+                ],
+                "trust_boundary": "Heuristic source preference, not fact verification. Paraphrases and conflicting claims may require manual review."
+              }
+            }
+          ]
+        },
+        {
+          "round": 2,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "format",
+              "args": {
+                "items": [
+                  {
+                    "title": "Recent advances in AI are creating a 'paradigm shift' for robotics",
+                    "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                    "source": "Berkeley News",
+                    "summary": "Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots."
+                  },
+                  {
+                    "title": "A Way to Invest in AI and Robotics Together",
+                    "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                    "source": "MarketWise",
+                    "summary": "The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency."
+                  },
+                  {
+                    "title": "NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines",
+                    "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                    "source": "Interesting Engineering",
+                    "summary": "NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations."
+                  },
+                  {
+                    "title": "Physical AI: Robotics Heading Into 2027",
+                    "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                    "source": "Seeking Alpha",
+                    "summary": "This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027."
+                  },
+                  {
+                    "title": "Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously",
+                    "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                    "source": "Universe Today",
+                    "summary": "Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions."
+                  }
+                ],
+                "template": "sections",
+                "headline": "Bản tin AI Robotics Ngày Hôm Nay"
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "format",
+              "args": {
+                "items": [
+                  {
+                    "title": "Recent advances in AI are creating a 'paradigm shift' for robotics",
+                    "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                    "source": "Berkeley News",
+                    "summary": "Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots."
+                  },
+                  {
+                    "title": "A Way to Invest in AI and Robotics Together",
+                    "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                    "source": "MarketWise",
+                    "summary": "The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency."
+                  },
+                  {
+                    "title": "NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines",
+                    "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                    "source": "Interesting Engineering",
+                    "summary": "NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations."
+                  },
+                  {
+                    "title": "Physical AI: Robotics Heading Into 2027",
+                    "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                    "source": "Seeking Alpha",
+                    "summary": "This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027."
+                  },
+                  {
+                    "title": "Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously",
+                    "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                    "source": "Universe Today",
+                    "summary": "Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions."
+                  }
+                ],
+                "template": "sections",
+                "headline": "Bản tin AI Robotics Ngày Hôm Nay"
+              },
+              "result": {
+                "tool": "render_digest",
+                "template": "sections",
+                "markdown": "# Bản tin AI Robotics Ngày Hôm Nay\n\n## Tổng hợp\n- Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots. - [Berkeley News](https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics)\n- The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency. - [MarketWise](https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time)\n- NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations. - [Interesting Engineering](https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer)\n- This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027. - [Seeking Alpha](https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027)\n- Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions. - [Universe Today](https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar)\n",
+                "item_count": 5
+              }
+            }
+          ]
+        },
+        {
+          "round": 3,
+          "assistant_text": null,
+          "tool_calls": [
+            {
+              "name": "save_digest",
+              "args": {
+                "title": "Bản tin AI Robotics Ngày Hôm Nay",
+                "content": "# Bản tin AI Robotics Ngày Hôm Nay\n\n## Tổng hợp\n- Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots. - [Berkeley News](https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics)\n- The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency. - [MarketWise](https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time)\n- NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations. - [Interesting Engineering](https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer)\n- This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027. - [Seeking Alpha](https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027)\n- Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions. - [Universe Today](https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar)\n",
+                "confirmed": false
+              }
+            }
+          ],
+          "tool_results": [
+            {
+              "tool": "save_digest",
+              "args": {
+                "title": "Bản tin AI Robotics Ngày Hôm Nay",
+                "content": "# Bản tin AI Robotics Ngày Hôm Nay\n\n## Tổng hợp\n- Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots. - [Berkeley News](https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics)\n- The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency. - [MarketWise](https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time)\n- NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations. - [Interesting Engineering](https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer)\n- This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027. - [Seeking Alpha](https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027)\n- Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions. - [Universe Today](https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar)\n",
+                "confirmed": false
+              },
+              "result": {
+                "status": "confirmation_required",
+                "file_path": null,
+                "message": "Explicit user confirmation is required before saving."
+              }
+            }
+          ]
+        },
+        {
+          "round": 4,
+          "assistant_text": "Trước khi lưu bản tin, mình cần bạn xác nhận. Dưới đây là nội dung bản tin:\n\n# Bản tin AI Robotics Ngày Hôm Nay\n\n## Tổng hợp\n- Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots. - [Berkeley News](https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics)\n- The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency. - [MarketWise](https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time)\n- NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations. - [Interesting Engineering](https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer)\n- This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027. - [Seeking Alpha](https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027)\n- Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions. - [Universe Today](https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar)\n\nBạn có xác nhận muốn lưu bản tin này không?",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [
+        {
+          "tool": "clean_results",
+          "args": {
+            "items": [
+              {
+                "title": "Recent advances in AI are creating a 'paradigm shift' for robotics",
+                "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                "source": "Berkeley News",
+                "summary": "Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots."
+              },
+              {
+                "title": "A Way to Invest in AI and Robotics Together",
+                "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                "source": "MarketWise",
+                "summary": "The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency."
+              },
+              {
+                "title": "NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines",
+                "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                "source": "Interesting Engineering",
+                "summary": "NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations."
+              },
+              {
+                "title": "Physical AI: Robotics Heading Into 2027",
+                "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                "source": "Seeking Alpha",
+                "summary": "This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027."
+              },
+              {
+                "title": "Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously",
+                "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                "source": "Universe Today",
+                "summary": "Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions."
+              }
+            ]
+          },
+          "result": {
+            "tool": "clean_results",
+            "items": [
+              {
+                "title": "Recent advances in AI are creating a 'paradigm shift' for robotics",
+                "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                "source": "Berkeley News",
+                "summary": "Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots."
+              },
+              {
+                "title": "A Way to Invest in AI and Robotics Together",
+                "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                "source": "MarketWise",
+                "summary": "The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency."
+              },
+              {
+                "title": "NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines",
+                "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                "source": "Interesting Engineering",
+                "summary": "NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations."
+              },
+              {
+                "title": "Physical AI: Robotics Heading Into 2027",
+                "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                "source": "Seeking Alpha",
+                "summary": "This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027."
+              },
+              {
+                "title": "Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously",
+                "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                "source": "Universe Today",
+                "summary": "Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions."
+              }
+            ],
+            "input_count": 5,
+            "item_count": 5,
+            "removed_count": 0,
+            "removed": [],
+            "source_assessments": [
+              {
+                "index": 0,
+                "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                "rank": 3,
+                "reason": "Recognized primary/institutional domain; relevance and claims still need review"
+              },
+              {
+                "index": 1,
+                "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                "rank": 1,
+                "reason": "Unclassified source; no automatic verification"
+              },
+              {
+                "index": 2,
+                "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                "rank": 1,
+                "reason": "Unclassified source; no automatic verification"
+              },
+              {
+                "index": 3,
+                "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                "rank": 1,
+                "reason": "Unclassified source; no automatic verification"
+              },
+              {
+                "index": 4,
+                "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                "rank": 1,
+                "reason": "Unclassified source; no automatic verification"
+              }
+            ],
+            "trust_boundary": "Heuristic source preference, not fact verification. Paraphrases and conflicting claims may require manual review."
+          }
+        },
+        {
+          "tool": "format",
+          "args": {
+            "items": [
+              {
+                "title": "Recent advances in AI are creating a 'paradigm shift' for robotics",
+                "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                "source": "Berkeley News",
+                "summary": "Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots."
+              },
+              {
+                "title": "A Way to Invest in AI and Robotics Together",
+                "url": "https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time",
+                "source": "MarketWise",
+                "summary": "The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency."
+              },
+              {
+                "title": "NVIDIA's GR00T 2 lets robots learn tasks from humans, not machines",
+                "url": "https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer",
+                "source": "Interesting Engineering",
+                "summary": "NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations."
+              },
+              {
+                "title": "Physical AI: Robotics Heading Into 2027",
+                "url": "https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027",
+                "source": "Seeking Alpha",
+                "summary": "This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027."
+              },
+              {
+                "title": "Using Vibrations and AI, Future Robotic Missions Could Handle Buried Rocks Autonomously",
+                "url": "https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar",
+                "source": "Universe Today",
+                "summary": "Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions."
+              }
+            ],
+            "template": "sections",
+            "headline": "Bản tin AI Robotics Ngày Hôm Nay"
+          },
+          "result": {
+            "tool": "render_digest",
+            "template": "sections",
+            "markdown": "# Bản tin AI Robotics Ngày Hôm Nay\n\n## Tổng hợp\n- Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots. - [Berkeley News](https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics)\n- The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency. - [MarketWise](https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time)\n- NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations. - [Interesting Engineering](https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer)\n- This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027. - [Seeking Alpha](https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027)\n- Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions. - [Universe Today](https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar)\n",
+            "item_count": 5
+          }
+        },
+        {
+          "tool": "save_digest",
+          "args": {
+            "title": "Bản tin AI Robotics Ngày Hôm Nay",
+            "content": "# Bản tin AI Robotics Ngày Hôm Nay\n\n## Tổng hợp\n- Researchers have developed a framework allowing AI to generate robot-control programs that improve through simulation. This advancement is expected to enhance the reliability and performance of industrial robots. - [Berkeley News](https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics)\n- The article discusses how Amazon is positioned to benefit from advancements in AI and robotics, enhancing logistics and operational efficiency. - [MarketWise](https://marketwise.com/money-megatrends/this-stock-is-the-best-way-to-invest-in-ai-and-robotics-at-the-same-time)\n- NVIDIA's GR00T 2 can learn physical tasks from human demonstrations, achieving a high success rate after just five demonstrations. - [Interesting Engineering](https://interestingengineering.com/ai-robotics/nvidia-groot-2-human-robot-skill-transfer)\n- This article explores how advanced robotics is evolving and the implications for investment in the sector as we approach 2027. - [Seeking Alpha](https://seekingalpha.com/article/4964989-physical-ai-robotics-heading-into-2027)\n- Researchers at Virginia Tech are developing AI tools that allow robots to autonomously estimate the depth of buried objects, which could be crucial for future lunar missions. - [Universe Today](https://www.universetoday.com/articles/virginia-tech-researchers-use-vibrations-and-ai-to-estimate-depth-of-buried-objects-for-future-lunar)\n",
+            "confirmed": false
+          },
+          "result": {
+            "status": "confirmation_required",
+            "file_path": null,
+            "message": "Explicit user confirmation is required before saving."
+          }
+        }
+      ],
+      "ended_at": "2026-11-10T12:52:07"
+    },
+    {
+      "turn_index": 4,
+      "started_at": "2026-11-10T12:53:12",
+      "user": "Không, đừng lưu bản tin này.",
+      "status": "answered",
+      "assistant_text": "Đã rõ! Nếu bạn cần thêm thông tin hoặc có yêu cầu khác, hãy cho mình biết nhé!",
+      "rounds": [
+        {
+          "round": 1,
+          "assistant_text": "Đã rõ! Nếu bạn cần thêm thông tin hoặc có yêu cầu khác, hãy cho mình biết nhé!",
+          "tool_calls": [],
+          "tool_results": []
+        }
+      ],
+      "tool_events": [],
+      "ended_at": "2026-11-10T12:53:15"
+    }
+  ]
+}
