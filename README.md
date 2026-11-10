@@ -310,35 +310,105 @@ Try at least 3 live turns, for example:
 - A request thiếu thông tin (không nói rõ account/URL), rồi lượt sau bổ sung.
 - Một request "đăng/gửi bản tin lên Telegram" — quan sát agent có hành động ngay hay hỏi lại trước, rồi tự quyết định hành vi nào mới đúng và sửa prompt cho khớp.
 
-## Deploy nhanh để team khác dùng thử (khuyến nghị: Cloudflare Tunnel)
+## Hosting / Deploy để team khác dùng thử
 
-Để team cùng zone tự thử agent trong Team showdown, expose UI đang chạy local ra một link public. Cách nhanh nhất, không cần đăng ký domain hay deploy lên cloud, là **Cloudflare Tunnel** (`cloudflared`).
+UI của lab nằm tại `starter_v0/app.py`, chạy bằng Streamlit. Có hai cách chia sẻ:
 
-1. Chạy UI local trước (ví dụ Streamlit mặc định cổng `8501`):
+- **Demo nhanh:** Cloudflare Tunnel tạo link public tạm thời tới app trên máy bạn.
+- **Chạy khi máy bạn đã tắt:** deploy lên Streamlit Community Cloud.
 
-   ```bash
-   streamlit run app.py            # → http://localhost:8501
-   ```
+### 1. Chạy UI local
 
-2. Cài `cloudflared`:
+Từ thư mục gốc của repo, chạy:
 
-   ```bash
-   brew install cloudflared                          # macOS
-   winget install --id Cloudflare.cloudflared        # Windows (hoặc: scoop install cloudflared)
-   # Linux: xem https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/downloads/
-   ```
+```bash
+cd starter_v0
+python3 -m venv .venv                  # chỉ cần nếu chưa có virtual environment
+source .venv/bin/activate             # macOS / Linux
+pip install -r requirements.txt
+# Nếu chưa có .env: copy .env.example thành .env và điền API keys.
+python -m streamlit run app.py
+```
 
-   Windows: nếu báo `cloudflared not recognized`, mở terminal mới rồi chạy lại.
+Windows: dùng `.venv\Scripts\activate` để kích hoạt virtual environment.
 
-3. Mở tunnel trỏ vào cổng UI — lệnh trả về ngay một URL `https://<random>.trycloudflare.com`:
+Mở http://localhost:8501. Nếu app đã chạy tại cổng này thì không cần chạy thêm một bản nữa.
+Trong UI có **Research chat**, **All tools** (xem arguments và chạy từng tool), và
+**Session log** (tải transcript JSON). Tool `clean_results` có ví dụ sẵn, chạy không
+cần API key; chat và các tool online cần key tương ứng trong `.env`.
 
-   ```bash
-   cloudflared tunnel --url http://localhost:8501
-   ```
+### 2. Demo public bằng Cloudflare Tunnel
 
-4. Copy URL đó, dán vào `REPORT.md` Phần A (mục "Link dùng thử") để team khác mở thử.
+Mở terminal thứ hai, cài `cloudflared`:
 
-Lưu ý: link `trycloudflare.com` là tạm thời, sống theo phiên `cloudflared` (tắt lệnh là mất). Giữ lệnh chạy trong suốt buổi showdown. Nếu team deploy hẳn lên Vercel/Streamlit Cloud thì dùng link đó thay cho tunnel.
+```bash
+brew install cloudflared                          # macOS
+```
+
+Windows:
+
+```powershell
+winget install --id Cloudflare.cloudflared
+```
+
+Nếu Windows báo `cloudflared not recognized`, mở terminal mới rồi chạy lại.
+Linux: xem [hướng dẫn Cloudflare](https://developers.cloudflare.com/tunnel/get-started/).
+
+Tạo tunnel tới app đang chạy:
+
+```bash
+cloudflared tunnel --url http://localhost:8501
+```
+
+Lệnh sẽ in URL dạng `https://<random>.trycloudflare.com`. Gửi link đó cho team
+và điền vào mục **Link dùng thử** trong `starter_v0/artifacts/REPORT.md` Phần A.
+
+Giữ máy thức và cả hai tiến trình Streamlit + `cloudflared` chạy trong suốt buổi demo.
+Link là tạm thời: dừng tunnel thì link ngừng hoạt động; chạy lại có thể nhận link mới.
+Đây là cách chia sẻ demo, không phải hosting lâu dài.
+
+**Trước khi chia sẻ:** UI hiện chưa có đăng nhập. Người có link có thể gọi các tool
+bằng credentials trên server và tiêu tốn API credits của bạn. Chỉ chia sẻ trong
+nhóm phù hợp; bỏ `TELEGRAM_BOT_TOKEN` và `TELEGRAM_CHAT_ID` khỏi môi trường demo nếu
+không cần gửi Telegram. Nút xác nhận gửi trong UI không thay thế xác thực người dùng.
+Không commit `.env`, API keys hay transcripts chứa dữ liệu riêng tư lên GitHub.
+
+Tham khảo: [Cloudflare Quick Tunnels](https://developers.cloudflare.com/tunnel/get-started/quick-tunnels/).
+
+### 3. Hosting lâu dài bằng Streamlit Community Cloud
+
+1. Push code lên GitHub, gồm `starter_v0/app.py`, `starter_v0/requirements.txt`,
+   `artifacts/`, `tools/`, `providers/` và các file Python liên quan. Không push `.env`.
+2. Mở [Streamlit Community Cloud](https://share.streamlit.io/), chọn **Create app**,
+   rồi chọn repository và branch.
+3. Đặt **Main file path** là `starter_v0/app.py`. Streamlit cài dependencies từ
+   `starter_v0/requirements.txt`.
+4. Trong **Advanced settings → Secrets**, nhập các keys cần dùng ở cấp cao nhất
+   theo định dạng TOML, ví dụ bên dưới. Không upload `.env`.
+5. Deploy và dùng URL `https://<app-name>.streamlit.app` được cấp để chia sẻ và ghi
+   vào REPORT. App chạy trên cloud, không phụ thuộc máy local hay tunnel.
+
+```toml
+OPENROUTER_API_KEY = "your-provider-key"
+TAVILY_API_KEY = "your-tavily-key"
+FIRECRAWL_API_KEY = "your-firecrawl-key"
+RAPIDAPI_KEY = "your-rapidapi-key"
+RAPIDAPI_TWITTER_HOST = "twitter-api45.p.rapidapi.com"
+ARXIV_USER_AGENT = "ResearchLab/1.0 (educational lab)"
+```
+
+Chỉ khai báo credentials thực sự dùng. Top-level Streamlit secrets được cung cấp
+như environment variables cho code hiện tại đọc bằng `os.getenv`. Provider Ollama
+trên cloud không tự truy cập Ollama đang chạy tại localhost trên máy bạn; dùng
+provider cloud cho cách deploy này.
+
+Transcript lưu trong `starter_v0/transcripts/` trên filesystem của app; tải JSON
+qua **Session log** để giữ bằng chứng, không coi file local trên cloud là lưu trữ
+bền vững. Bổ sung xác thực và kiểm soát chi phí trước khi mở app cho công chúng.
+
+Tham khảo: [Deploy Streamlit app](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/deploy),
+[dependencies](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/app-dependencies),
+[secrets management](https://docs.streamlit.io/deploy/streamlit-community-cloud/deploy-your-app/secrets-management).
 
 ## Step 6 — Report + Debate Poster
 
