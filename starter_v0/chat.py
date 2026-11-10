@@ -10,8 +10,9 @@ from typing import Any
 from env_loader import load_lab_env
 from providers import make_provider
 from providers.base import ToolCall
-from tools import TOOL_FUNCTIONS, load_tool_declarations, to_openai_tools
+from tools import load_tool_declarations, to_openai_tools
 from versioning import artifact_version_dict, build_artifact_version
+from write_safety import WRITE_TOOLS, invoke_tool, parse_explicit_confirmation
 
 
 ROOT = Path(__file__).parent
@@ -41,19 +42,18 @@ def trim_history(history: list[dict[str, str]], window: int) -> list[dict[str, s
     return history[-window * 2:]
 
 
-def execute_tool_call(call: ToolCall) -> dict[str, Any]:
-    func = TOOL_FUNCTIONS.get(call.name)
-    if not func:
-        return {
-            "tool": call.name,
-            "args": call.args,
-            "result": {"error": "unknown_tool", "message": f"No local implementation for {call.name}"},
-        }
-    try:
-        result = func(**call.args)
-    except Exception as exc:
-        result = {"error": type(exc).__name__, "message": str(exc)}
-    return {"tool": call.name, "args": call.args, "result": result}
+def execute_tool_call(call: ToolCall, *, approved_write: bool = False) -> dict[str, Any]:
+    actual_args, result = invoke_tool(call.name, call.args, host_approved_write=approved_write)
+    return {"tool": call.name, "args": actual_args, "result": result}
+
+
+def request_explicit_write_approval(description: str) -> bool:
+    """Keep asking until the host gives a clear yes/no; hedging is not consent."""
+    while True:
+        decision = parse_explicit_confirmation(input(f"{description} (yes/no): "))
+        if decision is not None:
+            return decision
+        print("Please answer yes or no. An unclear answer does not authorize this write.")
 
 
 def tool_results_message(events: list[dict[str, Any]]) -> dict[str, str]:
@@ -113,31 +113,46 @@ def run_model_tool_loop(
 
         for call in calls:
             print(f"🔧 {call.name}({json.dumps(call.args, ensure_ascii=False, sort_keys=True)})")
-            if call.name == "save_digest":
-                title = call.args.get("title", "")
-                content = call.args.get("content", "")
+            if call.name in WRITE_TOOLS:
+                if call.name == "save_digest":
+                    title = call.args.get("title", "")
+                    content = call.args.get("content", "")
+                    if not isinstance(title, str) or not title.strip() or not isinstance(content, str) or not content.strip():
+                        event = {
+                            "tool": call.name,
+                            "args": {"title": title, "confirmed": False},
+                            "result": {"status": "missing_info", "message": "A nonempty title and complete Markdown content are required before approval."},
+                        }
+                        round_record["tool_results"].append(event)
+                        all_tool_events.append(event)
+                        non_clarification_events.append(event)
+                        continue
+                    print(f"\nExact digest title: {title}")
+                    print(f"Exact Markdown content to save:\n{content}\n")
+                    description = "Approve saving this exact digest"
+                else:
+                    text = call.args.get("text", "")
+                    if not isinstance(text, str) or not text.strip():
+                        event = {
+                            "tool": call.name,
+                            "args": {"confirmed": False},
+                            "result": {"status": "missing_info", "message": "A nonempty message is required before approval."},
+                        }
+                        round_record["tool_results"].append(event)
+                        all_tool_events.append(event)
+                        non_clarification_events.append(event)
+                        continue
+                    print(f"\nExact Telegram message to send:\n{text}\n")
+                    description = "Approve sending this exact message"
 
-                print(f"\nAgent requests saving digest: {title}")
-                print(f"Content preview:\n{content}\n")
-
-                approval = input("Approve saving this digest? (yes/no): ").strip().lower()
-
-                if approval in {"yes", "y"}:
-                    event = execute_tool_call(
-                        ToolCall(
-                            "save_digest",
-                            {
-                                "title": title,
-                                "content": content,
-                                "confirmed": True,
-                            },
-                        )
-                    )
+                approved = request_explicit_write_approval(description)
+                if approved:
+                    event = execute_tool_call(call, approved_write=True)
                 else:
                     event = {
-                        "tool": "save_digest",
-                        "args": {"title": title, "confirmed": False},
-                        "result": {"status": "cancelled", "message": "User did not approve saving."},
+                        "tool": call.name,
+                        "args": {key: value for key, value in call.args.items() if key != "confirmed"},
+                        "result": {"status": "cancelled", "message": "User did not approve this write."},
                     }
             else:
                 event = execute_tool_call(call)

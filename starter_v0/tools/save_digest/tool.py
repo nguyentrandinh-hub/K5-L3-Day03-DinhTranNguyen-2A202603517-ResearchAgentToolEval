@@ -18,11 +18,11 @@ def _slugify(title: str) -> str:
     return slug[:80].rstrip("-")
 
 
-def save_digest(title: str, content: str, confirmed: bool = False) -> dict:
+def save_digest(title: str, content: str, confirmed: bool = False, _host_approved: bool = False) -> dict:
     """Persist a Markdown digest without overwriting existing files."""
-    if confirmed is not True:
+    if confirmed is not True or _host_approved is not True:
         return {"status": "confirmation_required", "file_path": None,
-                "message": "Explicit user confirmation is required before saving."}
+                "message": "Explicit user confirmation and host approval are required before saving."}
 
     if not isinstance(title, str) or not title.strip():
         return {"status": "error", "file_path": None, "message": "A nonempty title is required."}

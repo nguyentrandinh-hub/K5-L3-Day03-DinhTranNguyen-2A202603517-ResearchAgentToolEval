@@ -7,7 +7,8 @@ def test_save_success(tmp_path, monkeypatch):
     result = module.save_digest(
         "AI News",
         "# AI News",
-        confirmed=True
+        confirmed=True,
+        _host_approved=True,
     )
 
     assert result["status"] == "saved"
@@ -30,8 +31,8 @@ def test_requires_confirmation(tmp_path, monkeypatch):
 def test_no_overwrite(tmp_path, monkeypatch):
     monkeypatch.setattr(module, "DIGEST_DIR", tmp_path)
 
-    module.save_digest("AI News", "First", True)
-    result = module.save_digest("AI News", "Second", True)
+    module.save_digest("AI News", "First", True, _host_approved=True)
+    result = module.save_digest("AI News", "Second", True, _host_approved=True)
 
     assert result["status"] == "error"
     assert (tmp_path / "ai-news.md").read_text() == "First"

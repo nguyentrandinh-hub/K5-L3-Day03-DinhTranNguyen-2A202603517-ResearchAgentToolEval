@@ -8,12 +8,18 @@ import requests
 from tools._shared import TIMEOUT, err
 
 
-def send_telegram(text: str = "", confirmed: bool = False) -> dict[str, Any]:
+def send_telegram(text: str = "", confirmed: bool = False, _host_approved: bool = False) -> dict[str, Any]:
     if not confirmed:
         return {
             "tool": "send_telegram",
             "status": "needs_confirmation",
             "message": "Only send after the user explicitly confirms.",
+        }
+    if _host_approved is not True:
+        return {
+            "tool": "send_telegram",
+            "status": "host_approval_required",
+            "message": "Host approval is required before sending.",
         }
     try:
         token = os.getenv("TELEGRAM_BOT_TOKEN")

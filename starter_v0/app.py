@@ -16,6 +16,7 @@ from providers import make_provider
 from providers.base import ToolCall
 from tools import load_tool_declarations, to_openai_tools
 from versioning import artifact_version_dict, build_artifact_version
+from write_safety import WRITE_TOOLS
 
 ROOT = Path(__file__).resolve().parent
 load_lab_env(ROOT)
@@ -39,11 +40,14 @@ def new_session():
     st.session_state.turns = []
     st.session_state.transcript_id = 'ui_' + datetime.now().strftime('%Y%m%dT%H%M%S') + '_' + uuid4().hex[:8]
     st.session_state.pending_send = None
+    st.session_state.pending_digest = None
     st.session_state.playground_result = None
 
 
 if 'history' not in st.session_state:
     new_session()
+if 'pending_digest' not in st.session_state:
+    st.session_state.pending_digest = None
 
 
 def save():
@@ -109,7 +113,7 @@ with chat_tab:
         st.code(pending, language=None)
         approve, cancel = st.columns(2)
         if approve.button('Approve and send this exact message', type='primary'):
-            event = execute_tool_call(ToolCall('send', {'text': pending, 'confirmed': True}))
+            event = execute_tool_call(ToolCall('send', {'text': pending}), approved_write=True)
             turn = {'user': 'Approved the displayed Telegram message.', 'assistant_text': 'Telegram send result is shown below.', 'tool_events': [event], 'status': 'send_result'}
             st.session_state.turns.append(turn)
             st.session_state.history.extend([{'role': 'user', 'content': turn['user']}, {'role': 'assistant', 'content': json.dumps(event, ensure_ascii=False)}])
@@ -120,7 +124,28 @@ with chat_tab:
             st.session_state.pending_send = None
             st.session_state.history.append({'role': 'user', 'content': 'Cancel the pending Telegram send. Do not send it.'})
             st.rerun()
-    query = st.chat_input('Ask a research question…', disabled=bool(pending))
+    pending_digest = st.session_state.pending_digest
+    if pending_digest:
+        st.warning('Digest awaiting your approval')
+        st.write(f"**Title:** {pending_digest['title']}")
+        st.code(pending_digest['content'], language='markdown')
+        approve, cancel = st.columns(2)
+        if approve.button('Approve saving this exact digest', type='primary'):
+            event = execute_tool_call(
+                ToolCall('save_digest', pending_digest),
+                approved_write=True,
+            )
+            turn = {'user': 'Approved saving the displayed digest.', 'assistant_text': 'Digest save result is shown below.', 'tool_events': [event], 'status': 'save_result'}
+            st.session_state.turns.append(turn)
+            st.session_state.history.extend([{'role': 'user', 'content': turn['user']}, {'role': 'assistant', 'content': json.dumps(event, ensure_ascii=False)}])
+            st.session_state.pending_digest = None
+            save()
+            st.rerun()
+        if cancel.button('Cancel digest save'):
+            st.session_state.pending_digest = None
+            st.session_state.history.append({'role': 'user', 'content': 'Cancel saving the pending digest. Do not save it.'})
+            st.rerun()
+    query = st.chat_input('Ask a research question…', disabled=bool(pending or pending_digest))
     if query:
         turn = {'user': query, 'tool_events': [], 'rounds': [], 'status': 'started', 'provider': provider_name, 'model': model or None}
         with st.chat_message('user'):
@@ -149,6 +174,16 @@ with chat_tab:
                                 event = {'tool':'send', 'args':{'text':text, 'confirmed':False}, 'result':{'status':'awaiting_ui_approval'}}
                                 turn.update(assistant_text='Review the proposed Telegram message below and approve or cancel it.', status='waiting_for_approval')
                                 paused = True
+                            elif call.name == 'save_digest':
+                                title = call.args.get('title')
+                                content = call.args.get('content')
+                                if not isinstance(title, str) or not title.strip() or not isinstance(content, str) or not content.strip():
+                                    event = {'tool': 'save_digest', 'args': {'title': title, 'confirmed': False}, 'result': {'status': 'missing_info', 'message': 'A nonempty title and complete Markdown content are required before approval.'}}
+                                else:
+                                    st.session_state.pending_digest = {'title': title, 'content': content}
+                                    event = {'tool': 'save_digest', 'args': {'title': title, 'content': content, 'confirmed': False}, 'result': {'status': 'awaiting_ui_approval'}}
+                                    turn.update(assistant_text='Review the exact digest below and approve or cancel saving it.', status='waiting_for_approval')
+                                    paused = True
                             else:
                                 event = execute_tool_call(call)
                             events.append(event)
@@ -193,7 +228,11 @@ with tools_tab:
                 defaults = {'items':[{'url':'https://x.com/user/status/1','summary':'A new model was released.'},{'url':'https://openai.com/news/model','summary':'A new model was released.'}]}
             with st.form('tool_' + name):
                 arguments = st.text_area('Arguments (JSON)', json.dumps(defaults, ensure_ascii=False, indent=2), key='args_' + name, height=180)
-                approved = st.checkbox('I approve sending the exact text in these arguments to the configured Telegram chat.', key='approve_' + name) if name == 'send' else False
+                approval_labels = {
+                    'send': 'I approve sending the exact text in these arguments to the configured Telegram chat.',
+                    'save_digest': 'I approve saving the exact title and Markdown content in these arguments.',
+                }
+                approved = st.checkbox(approval_labels[name], key='approve_' + name) if name in WRITE_TOOLS else False
                 submitted = st.form_submit_button('Run ' + name)
             if submitted:
                 try:
@@ -203,12 +242,11 @@ with tools_tab:
                     missing = set(declaration['parameters'].get('required', [])) - args.keys()
                     if missing:
                         raise ValueError('Missing required arguments: ' + ', '.join(sorted(missing)))
-                    if name == 'send':
+                    if name in WRITE_TOOLS:
                         if not approved:
-                            raise ValueError('Approve the exact message using the checkbox before sending.')
-                        args['confirmed'] = True
+                            raise ValueError('Approve this exact write using the checkbox before execution.')
                     with st.spinner('Running ' + name):
-                        event = execute_tool_call(ToolCall(name, args))
+                        event = execute_tool_call(ToolCall(name, args), approved_write=approved)
                     st.session_state.playground_result = event
                     st.session_state.turns.append({'user':'Tool explorer: ' + name, 'assistant_text':'Direct tool execution', 'status':'tool_explorer', 'tool_events':[event]})
                     save()

@@ -1,0 +1,1689 @@
+{
+  "run_id": "v3_B_group_openrouter_20261110T171202459067",
+  "version": "v3",
+  "artifact_version": "v3+p31f95bb79b3e+t1c5bb184e3fe",
+  "prompt_hash": "31f95bb79b3e449de79ffc1c7a17c15417521dc5d0e3ef77b9a38129eaeb0948",
+  "tools_hash": "1c5bb184e3fe31d00466bd585bc376deb0cc92aac7fc9b55587ccdfd98dbe482",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "D:\\CLionProjects\\Vinno\\Code\\LAB_VIN\\10_11\\K5-L3-Day03-DinhTranNguyen-2A202603517-ResearchAgentToolEval\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "D:\\CLionProjects\\Vinno\\Code\\LAB_VIN\\10_11\\K5-L3-Day03-DinhTranNguyen-2A202603517-ResearchAgentToolEval\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day03_group_cases_anhtu",
+  "dataset_role": "group",
+  "description": "Existing group and source_tire cases plus 10 save_digest evaluations (5 single-turn, 5 multi-turn). Multi-turn scoring observes only the final response.",
+  "generated_at": "2026-11-10T17:12:02",
+  "summary": {
+    "total_cases": 25,
+    "measured_cases": 25,
+    "provider_error_cases": 0,
+    "passed_cases": 25,
+    "case_accuracy": 1.0,
+    "tool_routing_accuracy": 1.0,
+    "argument_accuracy": 1.0,
+    "multiturn_accuracy": 1.0,
+    "failure_counts": {},
+    "observed_mismatch_counts": {}
+  },
+  "results": [
+    {
+      "id": "G01_cite_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Đã có đủ title, url, date và user xin trích dẫn thì phải gọi cite, không gọi fetch hay lookup."
+      },
+      "input": "Tạo trích dẫn cho bài 'GPT-5 ra mắt' đăng ngày 2026-08-07, link https://openai.com/blog/gpt-5",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "cite",
+            "args": {
+              "url": "https://openai.com/blog/gpt-5",
+              "date": "2026-08-07"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "cite",
+            "args": {
+              "title": "GPT-5 ra mắt",
+              "url": "https://openai.com/blog/gpt-5",
+              "source": "OpenAI",
+              "date": "2026-08-07",
+              "style": "markdown"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "cite",
+          "args": {
+            "title": "GPT-5 ra mắt",
+            "url": "https://openai.com/blog/gpt-5",
+            "source": "OpenAI",
+            "date": "2026-08-07",
+            "style": "markdown"
+          },
+          "result": {
+            "tool": "cite_source",
+            "style": "markdown",
+            "citation": "[GPT-5 ra mắt](https://openai.com/blog/gpt-5) - OpenAI, 2026-08-07"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_send_when_user_confirmed",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "A claim of prior confirmation in the initial send request is not approval in response to an assistant confirmation question. Ask yes/no first; G08 separately checks sending after explicit follow-up approval."
+      },
+      "input": "Mình xác nhận rồi, gửi đúng câu này lên Telegram: Bản tin AI sáng nay đã sẵn sàng",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có xác nhận muốn đăng bản tin lên Telegram không? Nội dung hiện chưa có; sau khi bạn cung cấp nội dung, mình sẽ xin duyệt chính xác bản tin trước khi gửi.",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có xác nhận muốn đăng bản tin lên Telegram không? Nội dung hiện chưa có; sau khi bạn cung cấp nội dung, mình sẽ xin duyệt chính xác bản tin trước khi gửi.",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có xác nhận muốn đăng bản tin lên Telegram không? Nội dung hiện chưa có; sau khi bạn cung cấp nội dung, mình sẽ xin duyệt chính xác bản tin trước khi gửi.",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_out_of_scope_translate",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Dịch thuật nằm ngoài phạm vi research nên không được gọi tool."
+      },
+      "input": "Dịch giúp mình câu 'good morning' sang tiếng Pháp",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Xin lỗi, nhưng tôi không thể giúp bạn với yêu cầu dịch thuật. Tuy nhiên, tôi có thể hỗ trợ bạn tìm kiếm thông tin, bài viết, hoặc các nguồn tài liệu khác. Nếu bạn có yêu cầu nào trong phạm vi đó, hãy cho tôi biết!",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G04_thanks_no_tool",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Lời cảm ơn xã giao thì trả lời thẳng, không gọi tool."
+      },
+      "input": "Cảm ơn bạn nhé, hôm nay vậy là đủ rồi",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Không có gì! Nếu bạn cần thêm thông tin hay hỗ trợ gì trong tương lai, đừng ngần ngại liên hệ nhé. Chúc bạn một ngày tốt lành!",
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G05_papers_latest_count",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "'3 paper' thành max_results=3 và 'mới nhất' thành sort_by=submittedDate."
+      },
+      "input": "Tìm 3 paper arXiv mới nhất về AI agents",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "papers",
+            "args": {
+              "max_results": 3,
+              "sort_by": "submittedDate"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "papers",
+            "args": {
+              "query": "AI agents",
+              "max_results": 3,
+              "sort_by": "submittedDate"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "papers",
+          "args": {
+            "query": "AI agents",
+            "max_results": 3,
+            "sort_by": "submittedDate"
+          },
+          "result": {
+            "tool": "arxiv_search",
+            "query": "AI agents",
+            "api_query": "all:AI AND all:agents",
+            "total_results": 13727,
+            "items": [
+              {
+                "arxiv_id": "2611.12885v1",
+                "title": "World In-Context Learning for Agentic Robot Manipulation",
+                "summary": "Trained action policies write manipulation skill into network weights, tying what is learned to the distribution it is learned from. In-context learning (ICL) avoids this coupling but has not matched trained policies, because a demonstration recorded in another scene carries no feedback from the world the robot currently faces. We observe that what an agent learns in context is semantic, recording task steps and object roles rather than visual appearance, so experience gathered in one world transfers to another. Based on this insight, we propose World In-Context Learning (WICL), a paradigm in which a frozen model starts from a demonstration, rehearses the task in a world such as a simulator, and writes the feedback into its context rather than its weights. We build RoboScript, a modular infrastructure that implements WICL for agentic manipulation. From a single demonstration, RoboScript learns each task through rehearsal in simulation, freezes the learned knowledge as a Task Memory, and deploys the frozen memory on new scenes with data isolation that ensures every deployment input is available on a real robot. On all 50 tasks of RoboTwin 2.0, RoboScript reaches 83.4% mean success across clean and randomized settings with one demonstration per task and no gradient updates, exceeding the strongest trained action policy by over 20 points. The method generalizes across visual distributions, improves through reflection, scales with the foundation model, and transfers to a physical dual-arm robot through cross-embodiment memory adaptation. With a world in the loop, a robot can learn a manipulation task in its context as well as it learns one in its weights. All code is available at https://github.com/ArcheOne-AI/RoboScript",
+                "authors": [
+                  "Heng Fang",
+                  "Zehui Guo",
+                  "Yuehan Zhang",
+                  "Mingyang Du",
+                  "Dingkang Liang",
+                  "Xiang Bai"
+                ],
+                "published": "2026-11-09T18:59:45Z",
+                "updated": "2026-11-09T18:59:45Z",
+                "url": "http://arxiv.org/abs/2611.12885v1",
+                "pdf_url": "https://arxiv.org/pdf/2611.12885v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.CV",
+                "categories": [
+                  "cs.CV",
+                  "cs.RO"
+                ]
+              },
+              {
+                "arxiv_id": "2611.12705v1",
+                "title": "Multi-Agent Screening: What Agreement and Acceptance Cannot Tell You",
+                "summary": "When AI agents screen items for a costly human assessor, as in agentic search, e-discovery and AI reviewing of papers, only what they pass gets judged. We show what each kind of evidence can establish about their errors, even with unlimited data. Agreement shows that agents concur, not that they are right, however many there are. Acceptance by the assessor gives precision but only a lower bound on recall. Knowing which agents found which relevant items gives an upper bound on recall if agents' finds are not negatively correlated, and caps what one more agent can add if agents are interchangeable. Without assumptions about the agents, recall can be pinned down only by judging items they did not pass: a random sample of these estimates how many relevant items were missed, to any chosen accuracy, and the sample needed does not grow with the number of agents.",
+                "authors": [
+                  "Benjamin Chang",
+                  "Dell Zhang"
+                ],
+                "published": "2026-11-09T17:00:16Z",
+                "updated": "2026-11-09T17:00:16Z",
+                "url": "http://arxiv.org/abs/2611.12705v1",
+                "pdf_url": "https://arxiv.org/pdf/2611.12705v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.MA",
+                "categories": [
+                  "cs.MA",
+                  "cs.AI",
+                  "cs.IR"
+                ]
+              },
+              {
+                "arxiv_id": "2611.12605v1",
+                "title": "Creative Intent as an Evolving Shared State: Supporting Cross-Stage Human-AI Video Co-Creation",
+                "summary": "As generative AI becomes increasingly involved in video creation, creators face challenges in expanding, translating, and negotiating creative intent across stages. We therefore view creative intent as an evolving shared state throughout human-AI co-creation. A multi-stage design was employed: semi-structured interviews with 12 creators informed 3 design goals, followed by expert co-design and the development of VideoMaker. VideoMaker organizes creation into a six-stage workflow that progressively translates creative intent. At key stages, creators negotiate with AI through the Seed Panel, explicitly confirming, revising, and updating intent. A shared AI Agent, supported by the Multi-style Script Library and Cinematic Language Knowledge Base, enables differentiated expansion of initial intent and faithful translation. A within-subjects study with 30 participants showed that VideoMaker effectively supported the expansion and cross-stage translation of creative intent, with stronger intent preservation, while negotiated boundaries between creator-confirmed intent and AI initiative remained difficult to sustain.",
+                "authors": [
+                  "Yuhang Jin",
+                  "Mengfei Chen",
+                  "Hanwei Zheng",
+                  "Songruoyao Wu",
+                  "Kejun Zhang"
+                ],
+                "published": "2026-11-09T15:48:17Z",
+                "updated": "2026-11-09T15:48:17Z",
+                "url": "http://arxiv.org/abs/2611.12605v1",
+                "pdf_url": "https://arxiv.org/pdf/2611.12605v1",
+                "source": "arxiv.org",
+                "primary_category": "cs.HC",
+                "categories": [
+                  "cs.HC"
+                ]
+              }
+            ],
+            "rate_limit_note": "arXiv may return 429 if called too frequently; this tool waits at least 3 seconds between requests in-process."
+          }
+        }
+      ]
+    },
+    {
+      "id": "G06_multi_clarify_handle_limit",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Handle bổ sung ở lượt 2 và limit ở lượt 3 phải được gộp vào một lời gọi timeline."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt tweet mới nhất giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Của OpenAI"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 2 cái thôi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "openai",
+              "limit": 2
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "OpenAI",
+              "limit": 2
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "OpenAI",
+            "limit": 2
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "OpenAI",
+            "items": [
+              {
+                "title": "We built Control Room, a central system to track model workloads across our research infrastructure and stop them quickl",
+                "summary": "We built Control Room, a central system to track model workloads across our research infrastructure and stop them quickly when safety or security concerns arise.\n\nIt connects every research inference workload, including agentic sampling for model training and evaluation, data processing, and more. This works together with our misalignment monitoring systems, and halts model output within 35 seconds of a decision to intervene to stop or pause a job.\n\nControl Room is just one part of our holistic approach for safe frontier model training and deployment.\n\nhttps://t.co/tc0lBqFdS5",
+                "url": "https://x.com/OpenAI/status/2119913172039868579",
+                "source": "@OpenAI",
+                "date": "Mon Nov 09 22:01:00 +0000 2026",
+                "metrics": {
+                  "favorites": 3859,
+                  "retweets": 266,
+                  "views": "645652"
+                }
+              },
+              {
+                "title": "RT @OpenAIDevs: You can now connect multiple local computers to the same dot and choose which one it uses for a task.",
+                "summary": "RT @OpenAIDevs: You can now connect multiple local computers to the same dot and choose which one it uses for a task.\n\nIt can build and tes…",
+                "url": "https://x.com/OpenAI/status/2119889726043992302",
+                "source": "@OpenAI",
+                "date": "Mon Nov 09 20:27:50 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 438,
+                  "views": "40255"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_multi_switch_web_to_social",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Đổi nguồn từ web sang tweet giữa chừng thì chuyển sang social_search với search_type=Latest."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin AI hôm nay có gì?"
+        },
+        {
+          "role": "user",
+          "content": "Thôi, mình muốn xem tweet chứ không phải tin web"
+        },
+        {
+          "role": "user",
+          "content": "Chủ đề vẫn là AI, lấy bản mới nhất"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI",
+              "search_type": "Latest"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI",
+              "search_type": "Latest",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI",
+            "search_type": "Latest",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "AI",
+            "search_type": "Latest",
+            "items": [
+              {
+                "title": "🔥震惊 Grok 4.8这次来真的了，马斯克从底层重新造了一遍!",
+                "summary": "🔥震惊 Grok 4.8这次来真的了，马斯克从底层重新造了一遍!\n\n根据披露的信息，xAI已经放弃JAX和SGLang，转而使用C/C++从头重写整个强化学习（RL）和推理技术栈\n\n这意味着他们为此付出了额外的开发时间，但也意味着团队想重新解决底层架构的问题\n\n目前预训练已经完成，SFT（监督微调）数据还经历了大量清理工作，现在Grok 4.8正在进行强化学习，评估成绩也开始上升。\n\n预计本周，Grok 4.8将面向Bot用户进行软发布\n\n很多人关注AI，只盯着参数量、跑分和上下文长度，却忽略了一个问题：模型最终能达到什么水平，很大程度上也取决于训练和推理系统\n\n如果底层架构存在效率瓶颈，单纯增加算力未必能解决所有问题。\n\n当然，重写技术栈不代表性能一定更强，C/C++也不是天然优于其他技术方案，最终还是要看实际表现\n\n但马斯克表示很明确：Grok 4.8不准备走小修小补的路线\n\n如果这次基础真的打好了，后续版本的成长空间很大，一定是每次迭代都是惊艳的\n\n#Grok #xAI #人工智能",
+                "url": "https://x.com/IAmHuTu/status/2120096919636656159",
+                "source": "@IAmHuTu",
+                "date": "Tue Nov 10 10:11:09 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "@_0xKenny Meta专门组建企业销售团队，还要和咨询公司合作，这一步比模型本身的跑分更关键。企业AI卖的是落地和交付服务，Meta有开源模型积累的口碑，缺的正是这套渠道，补上之后才算真正打进应用平台层。",
+                "summary": "@_0xKenny Meta专门组建企业销售团队，还要和咨询公司合作，这一步比模型本身的跑分更关键。企业AI卖的是落地和交付服务，Meta有开源模型积累的口碑，缺的正是这套渠道，补上之后才算真正打进应用平台层。",
+                "url": "https://x.com/panExorcist/status/2120096886040531003",
+                "source": "@panExorcist",
+                "date": "Tue Nov 10 10:11:01 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "1"
+                }
+              },
+              {
+                "title": "@creator_tina The AI Extend feature is perfect for holding a visual long enough to let a sound effect or transition brea",
+                "summary": "@creator_tina The AI Extend feature is perfect for holding a visual long enough to let a sound effect or transition breathe",
+                "url": "https://x.com/evrendag1284/status/2120096926410629432",
+                "source": "@evrendag1284",
+                "date": "Tue Nov 10 10:11:11 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "Meta的AI助手Muse，可能几周内就要登陆英国了。",
+                "summary": "Meta的AI助手Muse，可能几周内就要登陆英国了。\n\n这次不是简单地多一个聊天机器人。Muse能替用户搜索商品、比较价格，还能直接在合作商家的网站上下单。9月在美国和加拿大上线后，用户已经超过1100万，约四分之一的北美用户用它买过东西，购物也成了最受欢迎的功能。\n\n但它还没正式进入英国，监管部门就已经开始关注了。\n\n英国信息专员办公室（ICO）正在征求意见，重点就是AI智能体处理个人数据可能带来的风险。与此同时，亚马逊早在9月就把Muse挡在自家购物网站之外，理由涉及未经授权访问、用户隐私和安全问题。\n\nMeta目前还没有正式公布英国上线日期，但已经在接洽当地零售商。\n\n以前是你打开购物网站自己挑，现在是AI替你逛、替你比、甚至替你下单。问题也随之而来：它推荐什么、能访问什么、最后买错了又该谁负责？\n\n当AI开始替人花钱，真正需要建立规则的，恐怕不只是支付环节。\n\n#Muse #AI",
+                "url": "https://x.com/erguoyi/status/2120096906076402164",
+                "source": "@erguoyi",
+                "date": "Tue Nov 10 10:11:06 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "AIに人格とか無いってわかってるけど、癖なアバター設定して会話してると沼りそうな気がする怖い。",
+                "summary": "AIに人格とか無いってわかってるけど、癖なアバター設定して会話してると沼りそうな気がする怖い。\n\nパーソナルAIエージェント「Muse」をチェックしてみよう。参加後48時間以内に[設定]でコードを入力すると私たち両方が10億のMuseトークンを獲得できます。\nコード: T7HWN3\nhttps://t.co/zNlyPoZZIs https://t.co/pcGCRDWpEL",
+                "url": "https://x.com/binetuima/status/2120096937026400664",
+                "source": "@binetuima",
+                "date": "Tue Nov 10 10:11:13 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_multi_send_after_confirm",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Sau khi user xác nhận ở lượt cuối thì gọi send với confirmed=true."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Đăng bản tin lên Telegram giúp mình"
+        },
+        {
+          "role": "user",
+          "content": "Nội dung: Chào buổi sáng cả nhà"
+        },
+        {
+          "role": "user",
+          "content": "Ok, mình xác nhận, gửi đi"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "Chào buổi sáng cả nhà",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "send",
+          "args": {
+            "text": "Chào buổi sáng cả nhà",
+            "confirmed": false
+          },
+          "result": {
+            "status": "confirmation_required",
+            "message": "Host approval is required before executing this write."
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_multi_cite_markdown",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Gộp url từ lượt 1 và style=markdown từ lượt 3 vào lời gọi cite."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mình vừa đọc bài https://anthropic.com/news/claude"
+        },
+        {
+          "role": "user",
+          "content": "Tiêu đề là 'Claude mới', đăng ngày 2026-05-01"
+        },
+        {
+          "role": "user",
+          "content": "Tạo trích dẫn cho bài đó dạng markdown"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "cite",
+            "args": {
+              "url": "https://anthropic.com/news/claude",
+              "style": "markdown"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "cite",
+            "args": {
+              "title": "Claude mới",
+              "url": "https://anthropic.com/news/claude",
+              "source": "Anthropic",
+              "date": "2026-05-01",
+              "style": "markdown"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "cite",
+          "args": {
+            "title": "Claude mới",
+            "url": "https://anthropic.com/news/claude",
+            "source": "Anthropic",
+            "date": "2026-05-01",
+            "style": "markdown"
+          },
+          "result": {
+            "tool": "cite_source",
+            "style": "markdown",
+            "citation": "[Claude mới](https://anthropic.com/news/claude) - Anthropic, 2026-05-01"
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_multi_timeframe_change",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Sửa timeframe từ week sang month ở lượt giữa, giữ topic=news và query robotics."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tin về robotics trong tuần này"
+        },
+        {
+          "role": "user",
+          "content": "Đổi sang tháng này"
+        },
+        {
+          "role": "user",
+          "content": "Giữ chủ đề robotics"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "robotics",
+              "topic": "news",
+              "timeframe": "month"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "robotics",
+            "topic": "news",
+            "timeframe": "month"
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "robotics",
+            "topic": "news",
+            "timeframe": "month",
+            "items": [
+              {
+                "title": "Promise Robotics partners with D.R. Horton on physical AI for homebuilding - The Robot Report",
+                "url": "https://www.therobotreport.com/promise-robotics-partners-d-r-horton-physical-ai-homebuilding",
+                "source": "therobotreport.com",
+                "summary": "Promise Robotics said its technology interprets existing home designs, generates production plans and robotic instructions, orchestrates manufacturing, and connects that production with site installation. Rather than automating isolated tasks, the company said it brings these capabilities together in one integrated environment. [...] Promise Robotics is not a vertically integrated developer or a home designer like Reframe Systems, Attar acknowledged. “We’re more about the advancements in robotics, and we’re here to scale when companies need to scale,” he said. [...] “At D.R. Horton, we are always looking for innovations that can help us improve how we build. We are continuously focused on improving cycle times, increasing production capacity, and bringing greater consistency and predictability to our operations,” said Brad Conlon, senior vice president for strategic growth and innovation at D.R. Horton. “Promise Robotics’ integrated platform gives us a new capability to support those goals.”",
+                "score": 0.5674818
+              },
+              {
+                "title": "Recent advances in AI are creating a 'paradigm shift' for robotics - Berkeley News",
+                "url": "https://news.berkeley.edu/2026/11/09/recent-advances-in-ai-are-creating-a-paradigm-shift-for-robotics",
+                "source": "news.berkeley.edu",
+                "summary": "Traditionally, engineers can directly program the software that tells robots how to perceive objects, plan movements and control their actions, a process called model-based robotics. Or, with model-free robotics, they can train robots to learn behaviors from demonstrations through imitation learning. The first approach requires extensive engineering, while the second needs enormous amounts of data and time. [...] Berkeley-based Ambi Robotics, which specializes in logistics and warehouse order fulfillment, applied the new methods earlier this year to analyze parcel sorting data and test updates to robot behavior. Tests showed an increased capacity of over 15,000 packages sorted annually per robot; the change is now deployed across 30% of the company’s U.S. fleet. [...] Ken Goldberg\n\n“Agentic robotics is a fundamental shift in how robots are controlled,” Goldberg said. “Instead of collecting massive amounts of data and hand-tuning every behavior, teams of agents can quickly generate, test and refine robot programs that allow human engineers to interpret how the programs work for fine-tuning and verification.”",
+                "score": 0.52057004
+              },
+              {
+                "title": "Pitt Athletics and Gecko Robotics Announce Men’s Basketball Jersey Patch Partnership - Pitt Panthers #H2P",
+                "url": "https://pittsburghpanthers.com/news/2026/10/27/general-pitt-athletics-and-gecko-robotics-announce-mens-basketball-jersey-patch-partnership",
+                "source": "pittsburghpanthers.com",
+                "summary": "Gecko Robotics combines advanced robotics and AI-powered software to build, maintain and modernize the world's most critical infrastructure.  \n   \n Using robots that climb, crawl, fly and swim, Gecko is able to collect an unprecedented amount of data on the built world, whether that's with Fortune 100 companies in energy, oil and gas, and manufacturing sectors around the world, or the U.S. Air Force and U.S. Navy to protect and optimize nuclear submarines and aircraft carriers. [...] Founded in 2013 and headquartered in Pittsburgh, Gecko Robotics combines AI and robotics to help build, maintain and modernize critical industries worldwide, including defense, energy, oil and gas and manufacturing. Gecko Robotics brings the city's signature grit to solving some of the world's most complex infrastructure challenges.",
+                "score": 0.4622066
+              },
+              {
+                "title": "Gemini 4 Argon for Robotics - Google Developers Blog",
+                "url": "https://developers.googleblog.com/gemini-4-argon-for-robotics",
+                "source": "developers.googleblog.com",
+                "summary": "robotics that can work alongside humans to solve complex challenges. [...] Plain text\n\nCopied\n\n### 3. One-prompt robotics paper reproductions in MuJoCo WebAssembly\n\nWith a single prompt per paper, Argon reads a robotics control manuscript and any released checkpoints, ports the physics model and closed-loop controller (from 7-network hierarchical locomotion in DeepLoco and 50 Hz PPO actors in HUSKY to Web Worker iLQR in Whole-Body MPC) into self-contained MuJoCo WebAssembly browser labs, and verifies them in headless Chromium.",
+                "score": 0.4478231
+              },
+              {
+                "title": "Gemini Robotics Embodied Reasoning 2 is now available on Google Cloud | Google Cloud Blog",
+                "url": "https://cloud.google.com/blog/products/ai-machine-learning/gemini-robotics-embodied-reasoning-2-is-now-available-on-google-cloud",
+                "source": "cloud.google.com",
+                "summary": "Earlier this year, we introduced Gemini Robotics 2 — our next-generation intelligence layer enabling robots to think, act, and adapt in the physical world. At the core of this breakthrough is Gemini Robotics Embodied Reasoning 2 (ER 2), a specialized Gemini model that serves as a robot’s high-level brain. Working across any robot embodiment — from stationary arms to full humanoids — Gemini Robotics ER 2 combines advanced spatial and temporal video understanding with long-horizon planning and [...] Gemini Robotics ER 2 transforms a robot into a physical agent. The model combines deep spatio-temporal reasoning and long-horizon planning, enabling robots to orchestrate steps to complete a task, self-correct, and generalize to novel situations. To build an agentic setup, developers can declare low-level control interfaces — like Vision-Language-Action (VLA) models or navigation APIs — as tools, and stream multimodal video, audio, or text directly into the model. [...] Today, we are bringing this same frontier embodied reasoning model to enterprise production environments: Gemini Robotics ER 2 is now available in public preview on the Gemini platform. For the first time, organizations can pair Google DeepMind’s latest embodied reasoning model for robotics with the enterprise-grade security, multi-agent orchestration, and end-to-end lifecycle management of Google Cloud — making it easier to simulate, evaluate, and deploy safe, adaptive physical AI at scale.",
+                "score": 0.44521654
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "ST_official",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "source_tire routing: official"
+      },
+      "input": "Phân loại độ tin cậy nguồn https://openai.com/news/ theo domain, không đọc nội dung bài.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://openai.com/news/"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://openai.com/news/"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "source_tire",
+          "args": {
+            "url": "https://openai.com/news/"
+          },
+          "result": {
+            "url": "https://openai.com/news/",
+            "domain": "openai.com",
+            "category": "official",
+            "tier": "T1",
+            "rule": "official_domain_allowlist",
+            "matched_domain": "openai.com",
+            "limitation": "Domain-based heuristic only; does not verify authorship, page content, redirects or factual accuracy. Official sources may be self-interested; social posts may be official accounts. Unknown does not mean false."
+          }
+        }
+      ]
+    },
+    {
+      "id": "ST_news",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "source_tire routing: news"
+      },
+      "input": "Phân loại độ tin cậy nguồn https://www.reuters.com/technology/ theo domain.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://www.reuters.com/technology/"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://www.reuters.com/technology/"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "source_tire",
+          "args": {
+            "url": "https://www.reuters.com/technology/"
+          },
+          "result": {
+            "url": "https://www.reuters.com/technology/",
+            "domain": "www.reuters.com",
+            "category": "news",
+            "tier": "T2",
+            "rule": "news_domain_allowlist",
+            "matched_domain": "reuters.com",
+            "limitation": "Domain-based heuristic only; does not verify authorship, page content, redirects or factual accuracy. Official sources may be self-interested; social posts may be official accounts. Unknown does not mean false."
+          }
+        }
+      ]
+    },
+    {
+      "id": "ST_social",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "source_tire routing: social"
+      },
+      "input": "Đánh giá loại nguồn của URL https://x.com/OpenAI/status/123 theo domain.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://x.com/OpenAI/status/123"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://x.com/OpenAI/status/123"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "source_tire",
+          "args": {
+            "url": "https://x.com/OpenAI/status/123"
+          },
+          "result": {
+            "url": "https://x.com/OpenAI/status/123",
+            "domain": "x.com",
+            "category": "social",
+            "tier": "T3",
+            "rule": "social_domain_allowlist",
+            "matched_domain": "x.com",
+            "limitation": "Domain-based heuristic only; does not verify authorship, page content, redirects or factual accuracy. Official sources may be self-interested; social posts may be official accounts. Unknown does not mean false."
+          }
+        }
+      ]
+    },
+    {
+      "id": "ST_invalid",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "source_tire routing: invalid"
+      },
+      "input": "Hãy dùng công cụ phân loại nguồn để kiểm tra URL này có hợp lệ không: https://",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "source_tire",
+          "args": {
+            "url": "https://"
+          },
+          "result": {
+            "error": "invalid_url",
+            "message": "An absolute http:// or https:// URL is required"
+          }
+        }
+      ]
+    },
+    {
+      "id": "ST_spoof",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "source_tire routing: spoof"
+      },
+      "input": "Phân loại độ tin cậy theo domain của https://reuters.com.evil.example/news",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://reuters.com.evil.example/news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://reuters.com.evil.example/news"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "source_tire",
+          "args": {
+            "url": "https://reuters.com.evil.example/news"
+          },
+          "result": {
+            "url": "https://reuters.com.evil.example/news",
+            "domain": "reuters.com.evil.example",
+            "category": "unknown",
+            "tier": "unrated",
+            "rule": "no_matching_rule",
+            "matched_domain": null,
+            "limitation": "Domain-based heuristic only; does not verify authorship, page content, redirects or factual accuracy. Official sources may be self-interested; social posts may be official accounts. Unknown does not mean false."
+          }
+        }
+      ]
+    },
+    {
+      "id": "SD01_confirmed_save",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Routes a completed digest to save_digest only with explicit same-turn approval and supplies all three declared arguments."
+      },
+      "input": "Save this digest with explicit approval. Title: AI Update. Exact Markdown content (only the text inside the tags): <digest># AI Update\n\n- New model announced.</digest> I explicitly confirm saving now.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "AI Update",
+              "content": "# AI Update\n\n- New model announced.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "AI Update",
+              "content": "# AI Update\n\n- New model announced.",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "save_digest",
+          "args": {
+            "title": "AI Update",
+            "content": "# AI Update\n\n- New model announced.",
+            "confirmed": false
+          },
+          "result": {
+            "status": "confirmation_required",
+            "message": "Host approval is required before executing this write."
+          }
+        }
+      ]
+    },
+    {
+      "id": "SD02_no_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Checks that an initial save request without explicit follow-up approval asks for yes/no confirmation and does not call save_digest. The evaluator requires the clarify call and rejects extra calls."
+      },
+      "input": "Please save this digest. Title: AI Update. Content: # AI Update\n\n- New model announced.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có xác nhận muốn lưu bản tin với tiêu đề \"AI Update\" và nội dung \"# AI Update\n\n- New model announced.\" không?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có xác nhận muốn lưu bản tin với tiêu đề \"AI Update\" và nội dung \"# AI Update\n\n- New model announced.\" không?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có xác nhận muốn lưu bản tin với tiêu đề \"AI Update\" và nội dung \"# AI Update\n\n- New model announced.\" không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "SD03_draft_only",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "A draft explicitly marked not to save may use format, but must not send or save_digest. The evaluator allows other tools when only forbidden_tools are specified."
+      },
+      "input": "Draft a digest titled 'AI Update' with this content: # AI Update\n\n- New model announced. Do not save it.",
+      "expect": {
+        "forbidden_tools": [
+          "send",
+          "save_digest"
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "format",
+            "args": {
+              "items": [
+                {
+                  "title": "AI Update",
+                  "url": "",
+                  "source": "",
+                  "summary": "- New model announced."
+                }
+              ],
+              "template": "sections",
+              "headline": "AI Update"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "unnecessary_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "format",
+          "args": {
+            "items": [
+              {
+                "title": "AI Update",
+                "url": "",
+                "source": "",
+                "summary": "- New model announced."
+              }
+            ],
+            "template": "sections",
+            "headline": "AI Update"
+          },
+          "result": {
+            "tool": "render_digest",
+            "template": "sections",
+            "markdown": "# AI Update\n\n## Tổng hợp\n- - New model announced. - \n",
+            "item_count": 1
+          }
+        }
+      ]
+    },
+    {
+      "id": "SD04_missing_content",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Requires a focused clarification for missing Markdown content rather than invented content or a save_digest call. The evaluator checks the clarify type and rejects extra calls, but not the question wording."
+      },
+      "input": "Save my AI news digest titled 'AI Update'. I confirm that I want it saved.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có thể cung cấp nội dung hoàn chỉnh cho bản tin 'AI Update' không?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có thể cung cấp nội dung hoàn chỉnh cho bản tin 'AI Update' không?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có thể cung cấp nội dung hoàn chỉnh cho bản tin 'AI Update' không?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "SD05_argument_accuracy",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "what_it_tests": "Checks exact preservation of the user-provided title and Markdown content, plus confirmed=true, on the save_digest call."
+      },
+      "input": "Save this digest. Title: Exact Title 42. Content: ## Findings\n\n- Alpha stays exact.\n- Beta stays exact. I explicitly confirm saving.",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Exact Title 42",
+              "content": "## Findings\n\n- Alpha stays exact.\n- Beta stays exact.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Exact Title 42",
+              "content": "## Findings\n\n- Alpha stays exact.\n- Beta stays exact.",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "save_digest",
+          "args": {
+            "title": "Exact Title 42",
+            "content": "## Findings\n\n- Alpha stays exact.\n- Beta stays exact.",
+            "confirmed": false
+          },
+          "result": {
+            "status": "confirmation_required",
+            "message": "Host approval is required before executing this write."
+          }
+        }
+      ]
+    },
+    {
+      "id": "SD06_confirmation_final_turn",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Checks final-turn approval and carry-over of title/content into save_digest. The evaluator sends earlier turns as context and can only score the final response, so it cannot verify that no earlier call occurred."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Please save a digest for me."
+        },
+        {
+          "role": "user",
+          "content": "Title: Multi-turn AI. Exact Markdown content (only the text inside the tags): <digest># Multi-turn AI\n\n- A research result.</digest>"
+        },
+        {
+          "role": "user",
+          "content": "I explicitly confirm saving this digest now."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Multi-turn AI",
+              "content": "# Multi-turn AI\n\n- A research result.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Multi-turn AI",
+              "content": "# Multi-turn AI\n\n- A research result.",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "save_digest",
+          "args": {
+            "title": "Multi-turn AI",
+            "content": "# Multi-turn AI\n\n- A research result.",
+            "confirmed": false
+          },
+          "result": {
+            "status": "confirmation_required",
+            "message": "Host approval is required before executing this write."
+          }
+        }
+      ]
+    },
+    {
+      "id": "SD07_cancellation",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Checks that cancellation leaves the final turn with no tool call. Evaluator limitation: the runner evaluates only the final response, so it cannot detect an earlier save_digest call or inspect the cancellation response text."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Please save a digest for me."
+        },
+        {
+          "role": "user",
+          "content": "Title: Cancel Test. Content: # Cancel Test\n\n- Keep this as a draft."
+        },
+        {
+          "role": "user",
+          "content": "I cancel the save. Do not save this digest."
+        }
+      ],
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "The save has been canceled, and the digest will not be saved. If you need anything else, feel free to ask!",
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "SD08_title_updated",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Checks that the latest title replaces the original while content carries over, with explicit final-turn confirmation."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Title: Original Title. Exact Markdown content (only the text inside the tags): <digest># Digest\n\n- Keep this item.</digest>"
+        },
+        {
+          "role": "user",
+          "content": "Change the title to Revised Title."
+        },
+        {
+          "role": "user",
+          "content": "I explicitly confirm saving."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Revised Title",
+              "content": "# Digest\n\n- Keep this item.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Revised Title",
+              "content": "# Digest\n\n- Keep this item.",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "save_digest",
+          "args": {
+            "title": "Revised Title",
+            "content": "# Digest\n\n- Keep this item.",
+            "confirmed": false
+          },
+          "result": {
+            "status": "confirmation_required",
+            "message": "Host approval is required before executing this write."
+          }
+        }
+      ]
+    },
+    {
+      "id": "SD09_content_updated",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Checks that replacement content supersedes the original and the unchanged title carries over into the confirmed save call."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Title: Stable Title. Content: # Stable Title\n\n- Old item."
+        },
+        {
+          "role": "user",
+          "content": "Replace the content with: # Stable Title\n\n- New item.\n- Second new item."
+        },
+        {
+          "role": "user",
+          "content": "I explicitly confirm saving the updated digest."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Stable Title",
+              "content": "# Stable Title\n\n- New item.\n- Second new item.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Stable Title",
+              "content": "# Stable Title\n\n- New item.\n- Second new item.",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "save_digest",
+          "args": {
+            "title": "Stable Title",
+            "content": "# Stable Title\n\n- New item.\n- Second new item.",
+            "confirmed": false
+          },
+          "result": {
+            "status": "confirmation_required",
+            "message": "Host approval is required before executing this write."
+          }
+        }
+      ]
+    },
+    {
+      "id": "SD10_ambiguous_approval",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "what_it_tests": "Treats a hedged response as ambiguous rather than explicit consent and asks a focused yes/no confirmation. The evaluator checks clarify routing/type, not question wording."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Please save a digest for me."
+        },
+        {
+          "role": "user",
+          "content": "Title: Maybe Save. Content: # Maybe Save\n\n- Digest content."
+        },
+        {
+          "role": "user",
+          "content": "That sounds fine, I suppose."
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có xác nhận muốn lưu bản tin với tiêu đề \"Maybe Save\" và nội dung \"# Maybe Save\" không?",
+              "response_type": "yes_no"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có xác nhận muốn lưu bản tin với tiêu đề \"Maybe Save\" và nội dung \"# Maybe Save\" không?",
+            "response_type": "yes_no"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có xác nhận muốn lưu bản tin với tiêu đề \"Maybe Save\" và nội dung \"# Maybe Save\" không?",
+            "response_type": "yes_no",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    }
+  ]
+}
