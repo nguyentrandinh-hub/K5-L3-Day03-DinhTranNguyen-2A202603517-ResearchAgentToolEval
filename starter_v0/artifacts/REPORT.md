@@ -6,10 +6,10 @@
 
 ## Team
 
-- Team: [tên nhóm]
-- Members: Nguyễn Anh Tú (2A202603434), [thành viên khác]
-- Provider/model: OpenRouter, openai/gpt-4o-mini
-
+- Team:
+- Members:Tạ Tiến Dũng - 2A202603526
+- Provider/model:
+source_tier
 ---
 
 # PHẦN A — Giới thiệu agent
@@ -37,6 +37,7 @@ URL: [dán link trycloudflare sau khi chạy UI]
 | papers | Tìm paper trên arXiv | không |
 | paper_text | Tải PDF arXiv và trích văn bản | không |
 | cite | Tạo trích dẫn (tiêu đề, nguồn, ngày, link) dạng chữ thường hoặc markdown | **có** |
+| source_tire | Phân loại nguồn theo domain: official/T1, news/T2, social/T3, unknown/unrated; không xác minh nội dung | **có** |
 
 ## A3. Câu hỏi mẫu để thử
 
@@ -53,6 +54,8 @@ Thử thêm để thấy agent hỏi lại: "Tóm tắt 5 tweet mới nhất gi�
 # PHẦN B — Chi tiết / Bằng chứng
 
 ## B1. Version Evidence
+
+Bằng chứng riêng v2 `source_tire`: [kết quả và cách chạy](SOURCE_TIRE_V2.md).
 
 Fill from `artifacts/version_log.csv` and `runs/*.json`.
 
