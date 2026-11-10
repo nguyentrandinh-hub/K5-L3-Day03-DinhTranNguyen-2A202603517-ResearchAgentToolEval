@@ -1,0 +1,21 @@
+{
+  "transcript_id": "ui_20261110T113046_abddc1ca",
+  "version": "ui",
+  "artifact_version": "ui+p9b23866d94ce+tf1b61bc89ff6",
+  "prompt_hash": "9b23866d94cea83fd4ee68eed020f2e83d8c20c6ba139c9c51a44ce49ded8f7a",
+  "tools_hash": "f1b61bc89ff6f9c6b1fda92e5213db10080e04b72b6a0f826de4c346b0e78aed",
+  "provider": "openrouter",
+  "model": null,
+  "turns": [
+    {
+      "user": "AI",
+      "tool_events": [],
+      "rounds": [],
+      "status": "error",
+      "provider": "openrouter",
+      "model": null,
+      "assistant_text": "RuntimeError: Install live provider dependency first: pip install openai"
+    }
+  ],
+  "updated_at": "2026-11-10T11:51:41"
+}
