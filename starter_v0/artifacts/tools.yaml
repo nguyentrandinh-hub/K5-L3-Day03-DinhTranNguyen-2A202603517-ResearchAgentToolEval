@@ -140,3 +140,14 @@ tools:
           default: 0.94
           description: "Minimum normalized-text similarity for near duplicates. Default 0.94 is conservative; 1 requires exact text for content matches. Matching URLs always deduplicate."
       required: [items]
+
+  - name: cite
+    description: "Format one already identified source as a plain or Markdown citation using supplied metadata. Use when the user asks for a citation; do not fetch or search if the needed metadata is already supplied. Does not verify facts. Never invent a title, publication date, or URL."
+    parameters:
+      type: object
+      properties:
+        title: {type: string, default: "", description: "Source title supplied by the user or retrieval results; omit if unknown."}
+        url: {type: string, default: "", description: "Exact source URL from the conversation or retrieval results. Supply at least a title or URL."}
+        source: {type: string, default: "", description: "Known publisher/source name; defaults to URL domain when omitted."}
+        date: {type: string, default: "", description: "Known publication date; preserve the provided date and do not infer it."}
+        style: {type: string, enum: [plain, markdown], default: "plain", description: "plain for text citation; markdown for a linked citation."}
