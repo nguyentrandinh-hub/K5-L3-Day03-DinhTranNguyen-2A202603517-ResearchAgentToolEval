@@ -146,13 +146,15 @@ tools:
     parameters:
       type: object
       properties:
-        title: {type: string, default: "", description: "Source title supplied by the user or retrieval results; omit if unknown."}
-        url: {type: string, default: "", description: "Exact source URL from the conversation or retrieval results. Supply at least a title or URL."}
-        source: {type: string, default: "", description: "Known publisher/source name; defaults to URL domain when omitted."}
-        date: {type: string, default: "", description: "Known publication date; preserve the provided date and do not infer it."}
-        style: {type: string, enum: [plain, markdown], default: "plain", description: "plain for text citation; markdown for a linked citation."}
+        title: {type: string, default: "", description: "Article title."}
+        url: {type: string, default: "", description: "Source URL."}
+        source: {type: string, default: "", description: "Publisher; leave empty to derive from the URL."}
+        date: {type: string, default: "", description: "Publication date, e.g. 2026-08-07."}
+        style: {type: string, enum: [plain, markdown], default: "plain", description: "Output format."}
+      required: []
+
   - name: save_digest
-    description: >
+    description:
       Save a completed AI news digest as a Markdown file.
       Only call this tool after the user explicitly confirms saving.
       If confirmation is missing, ask the user first.
@@ -173,3 +175,14 @@ tools:
         - title
         - content
         - confirmed
+
+  - name: source_tire
+    description: "Phân loại nguồn theo domain URL: official/T1, news/T2, social/T3, unknown/unrated. Chỉ dùng khi được yêu cầu đánh giá nguồn; thiếu URL thì clarify. Không tìm kiếm, đọc bài hay xác minh nội dung."
+    parameters:
+      type: object
+      additionalProperties: false
+      properties:
+        url:
+          type: string
+          description: "URL đầy đủ bắt đầu bằng http:// hoặc https:// của nguồn cần phân loại; không đoán URL."
+      required: [url]
