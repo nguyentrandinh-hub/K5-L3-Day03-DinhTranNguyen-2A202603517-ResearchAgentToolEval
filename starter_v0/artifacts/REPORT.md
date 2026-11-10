@@ -6,9 +6,9 @@
 
 ## Team
 
-- Team:
-- Members:
-- Provider/model:
+- Team: [tên nhóm]
+- Members: Nguyễn Anh Tú (2A202603434), [thành viên khác]
+- Provider/model: OpenRouter, openai/gpt-4o-mini
 
 ---
 
@@ -16,33 +16,37 @@
 
 ## A1. Agent này làm được gì
 
-> 1–2 câu mô tả agent dùng để làm gì (cho team khác hiểu nhanh).
-
-Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng hợp thành digest, và gửi lên Telegram khi được xác nhận."
+Research agent bản tin AI có trích dẫn: tìm tin AI mới trên web và mạng xã hội, đọc bài gốc, tra paper arXiv rồi trả kết quả kèm nguồn và trích dẫn để người dùng kiểm chứng. Agent hỏi lại khi thiếu thông tin, từ chối yêu cầu ngoài phạm vi, và chỉ gửi bản tin lên Telegram sau khi người dùng xác nhận.
 
 **Link dùng thử (deploy):**
 
-> Dán link public để team khác mở thử ngay. Cách deploy nhanh bằng Cloudflare Tunnel xem README. Nếu deploy Vercel/Streamlit Cloud thì dán link đó.
->
-> URL: 
+URL: [dán link trycloudflare sau khi chạy UI]
 
 ## A2. Tool agent có
 
-> Liệt kê các tool agent đang dùng (gồm tool mới nhóm tự thêm). Mỗi tool 1 dòng: tên + làm được gì.
-
 | Tên tool | Làm được gì | Tool mới nhóm thêm? |
 |---|---|---|
-| clarify | hỏi lại người dùng khi thiếu thông tin | không |
-|  |  |  |
-|  |  |  |
+| clarify | Hỏi lại người dùng khi thiếu thông tin (tài khoản nào, link nào) hoặc xin xác nhận trước khi gửi | không |
+| lookup | Tìm tin trên web theo từ khóa, chọn tin tức hoặc tổng quát và khoảng thời gian (ngày, tuần, tháng) | không |
+| social_search | Tìm bài đăng trên X theo từ khóa, sắp xếp mới nhất hoặc phổ biến nhất | không |
+| timeline | Lấy các bài đăng gần đây của một tài khoản X | không |
+| fetch | Đọc nội dung một đường link cụ thể | không |
+| format | Trình bày danh sách tin thành bản tin markdown (brief, sections, bullets, thread, daily_ai_vn) | không |
+| send | Gửi bản tin lên Telegram, chỉ khi người dùng đã xác nhận | không |
+| policy | Tra quy định nội bộ (nguồn, trích dẫn, dữ liệu, đăng tải, dùng tool) | không |
+| papers | Tìm paper trên arXiv | không |
+| paper_text | Tải PDF arXiv và trích văn bản | không |
+| cite | Tạo trích dẫn (tiêu đề, nguồn, ngày, link) dạng chữ thường hoặc markdown | **có** |
 
 ## A3. Câu hỏi mẫu để thử
 
-> 3–5 câu hỏi/yêu cầu mẫu để team khác tự thử agent ngay.
+1. Tin tức AI hôm nay có gì nổi bật?
+2. Tweet mới nhất của Sam Altman là gì?
+3. Tóm tắt bài này giúp mình: [dán một link bài báo thật]
+4. Tạo trích dẫn cho bài 'GPT-5 ra mắt' đăng ngày 2026-08-07, link https://openai.com/blog/gpt-5
+5. Đăng bản tin này lên Telegram giúp mình (agent sẽ hỏi xác nhận trước khi gửi)
 
-1.
-2.
-3.
+Thử thêm để thấy agent hỏi lại: "Tóm tắt 5 tweet mới nhất giúp mình" (không nói của ai).
 
 ---
 
