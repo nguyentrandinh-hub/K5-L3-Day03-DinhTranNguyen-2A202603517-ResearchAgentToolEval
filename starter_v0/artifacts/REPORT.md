@@ -55,16 +55,45 @@ Thử thêm để thấy agent hỏi lại: "Tóm tắt 5 tweet mới nhất gi�
 
 ## B1. Version Evidence
 
-Bằng chứng riêng v2 `source_tire`: [kết quả và cách chạy](SOURCE_TIRE_V2.md).
-
-Fill from `artifacts/version_log.csv` and `runs/*.json`.
+Provider/model: **OpenRouter / `openai/gpt-4o-mini`**, temperature = 0. Các số liệu dưới đây lấy từ `summary` trong run JSON, đối chiếu với [version_log.csv](version_log.csv). Base eval dùng cùng bộ **20 case** trong `data/eval_base.json`; không sửa nội dung case để tăng điểm.
 
 | Version | Changed Artifact | Hypothesis | Metric Before | Metric After | Run File |
 |---|---|---|---:|---:|---|
-| v0 | baseline | N/A| N/A | 65% | v0_B_base_openrouter_20261110T100121203164.json |
-| v1 | artifacts/system_prompt.md | Agent chưa phân biệt rõ web news và X/Twitter; bổ sung routing rules có thể cải thiện việc chọn tool. | 65% | 80% | v0+pa9f434bc7efb+t5b22a2476d41.json |
-| v2 |  |  |  |  |  |
-| v3 |  |  |  |  |  |
+| v0 | Baseline: prompt và tool declaration ban đầu | Đo lỗi routing/args trước khi tối ưu để có mốc so sánh. | Chưa có | **13/20 — 65%** | [v0 base](../runs/v0_B_base_openrouter_20261110T102032646724.json) |
+| v1 | `system_prompt.md`: bổ sung quy tắc không đoán handle/URL và hỏi lại khi thiếu thông tin | Quy tắc hỏi lại rõ ràng sẽ giảm lỗi tự điền thông tin thiếu, cải thiện kết quả base. | 13/20 — 65% | **16/20 — 80%** | [v1 base](../runs/v1_B_base_openrouter_20261110T104400962175.json) |
+| v2 (bản tích hợp `v2-source-tire-merged`) | Tích hợp `source_tire` vào `tools.yaml` và registry, giữ `cite`; dùng prompt chung của nhóm với quy tắc phạm vi và xác nhận gửi | Tool mới có điều kiện sử dụng rõ ràng sẽ giữ các case PASS cũ khi tích hợp với cấu hình chung của nhóm. | 16/20 — 80% | **20/20 — 100%**; giữ đủ 16 case PASS v1 | [v2 base](../runs/v2-source-tire-merged_B_base_openrouter_20261110T114804379960.json) |
+| v3 | `system_prompt.md`: thêm `Source Tire Routing and Validation`; giữ nguyên tools so với v2 tích hợp | Phân biệt thiếu URL với URL đã cung cấp nhưng sai định dạng sẽ giúp Agent gọi `source_tire` cho URL lỗi, đồng thời giữ kết quả base. | Base 20/20; source_tire 4/5 | **Base 20/20 — 100%; source_tire 5/5 — 100%** | [v3 base](../runs/v3_B_base_openrouter_20261110T122811939134.json), [v3 source_tire](../runs/v3_B_group_openrouter_20261110T122720852892.json) |
+
+Chi tiết metric trên **base eval**:
+
+| Version | case_accuracy | tool_routing_accuracy | argument_accuracy | multiturn_accuracy | Provider errors |
+|---|---:|---:|---:|---:|---:|
+| v0 | 65% | 75% | 65% | 100% | 0 |
+| v1 | 80% | 85% | 80% | 100% | 0 |
+| v2 tích hợp | 100% | 100% | 100% | 100% | 0 |
+| v3 | 100% | 100% | 100% | 100% | 0 |
+
+Định danh cấu hình từ từng run (`p` là tiền tố prompt hash, `t` là tiền tố tools hash; hash đầy đủ nằm trong JSON và CSV):
+
+| Version | artifact_version |
+|---|---|
+| v0 | `v0+peb1c8179815b+t5b22a2476d41` |
+| v1 | `v1+pd876255e393a+t5b22a2476d41` |
+| v2 tích hợp | `v2-source-tire-merged+p81b230f7120f+tc80d134c72b3` |
+| v3 | `v3+p4c50dcedface+tc80d134c72b3` |
+
+**Đối chứng cho tool mới:** v2 ban đầu với mô tả dài đạt 15/20; sau khi rút gọn riêng description của `source_tire`, [v2-compact](../runs/v2-compact_B_base_openrouter_20261110T113606053136.json) đạt lại 16/20 và giữ đúng 16 case PASS v1. Kết quả 20/20 của bản tích hợp đi kèm thay đổi prompt chung của nhóm và `cite`, nên không quy toàn bộ mức tăng cho riêng `source_tire`. Các lần thử trước vẫn được giữ trong log; xem [bằng chứng chi tiết v2](SOURCE_TIRE_V2.md).
+
+**Kiểm chứng giả thuyết v3:** ở [v2 source_tire](../runs/v2-source-tire-merged_B_group_openrouter_20261110T114656905887.json), case `ST_invalid` đưa URL `https://` nhưng Agent gọi `clarify`, khiến bộ 5 case chỉ đạt 4/5. Với quy tắc routing mới, v3 gọi `source_tire(url="https://")` và nhận `error="invalid_url"`, đạt 5/5. Bộ này chỉ gồm 5 case riêng của tool, không phải toàn bộ `eval_group.json`. Base v3 vẫn giữ đủ 16/16 case từng PASS ở v1 và 20/20 case của v2 tích hợp.
+
+Lệnh đã chạy từ `starter_v0/` để kiểm chứng v3:
+
+```powershell
+.\.venv\Scripts\python.exe run_eval.py --provider openrouter --model openai/gpt-4o-mini --version v3 --suite base --eval-cases data/eval_base.json
+.\.venv\Scripts\python.exe run_eval.py --provider openrouter --model openai/gpt-4o-mini --version v3 --suite group --eval-cases data/eval_source_tire.json
+```
+
+Snapshot cấu hình v3 đã lưu tại [v3_system_prompt.md](v3_system_prompt.md) và [v3_tools.yaml](v3_tools.yaml), có hash trùng run JSON. Các metric base đo routing và args của Agent, không khẳng định mọi API bên ngoài luôn trả dữ liệu thành công; kết quả model cũng có thể dao động giữa các lần chạy.
 
 ## B2. Failure Analysis
 
