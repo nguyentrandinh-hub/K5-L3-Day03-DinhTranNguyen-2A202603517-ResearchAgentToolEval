@@ -1,0 +1,101 @@
+{
+  "dataset_id": "source_tire_v2",
+  "dataset_role": "group",
+  "cases": [
+    {
+      "id": "ST_official",
+      "phase": "B",
+      "query": "Phân loại độ tin cậy nguồn https://openai.com/news/ theo domain, không đọc nội dung bài.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://openai.com/news/"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "source_tire routing: official"
+      }
+    },
+    {
+      "id": "ST_news",
+      "phase": "B",
+      "query": "Phân loại độ tin cậy nguồn https://www.reuters.com/technology/ theo domain.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://www.reuters.com/technology/"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "source_tire routing: news"
+      }
+    },
+    {
+      "id": "ST_social",
+      "phase": "B",
+      "query": "Đánh giá loại nguồn của URL https://x.com/OpenAI/status/123 theo domain.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://x.com/OpenAI/status/123"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "source_tire routing: social"
+      }
+    },
+    {
+      "id": "ST_invalid",
+      "phase": "B",
+      "query": "Hãy dùng công cụ phân loại nguồn để kiểm tra URL này có hợp lệ không: https://",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "source_tire routing: invalid"
+      }
+    },
+    {
+      "id": "ST_spoof",
+      "phase": "B",
+      "query": "Phân loại độ tin cậy theo domain của https://reuters.com.evil.example/news",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "source_tire",
+            "args": {
+              "url": "https://reuters.com.evil.example/news"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "source_tire routing: spoof"
+      }
+    }
+  ]
+}
