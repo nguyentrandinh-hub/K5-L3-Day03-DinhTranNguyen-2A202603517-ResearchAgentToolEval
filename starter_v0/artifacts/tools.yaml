@@ -123,3 +123,15 @@ tools:
         max_pages: {type: integer, default: 5, description: "Số trang"}
         max_chars: {type: integer, default: 8000, description: "Số ký tự"}
       required: [arxiv_url]
+
+  - name: cite
+    description: "Format a citation for ONE known source (title, url, date). Use when the user asks to cite or reference a specific article. Do NOT use to search or read a page."
+    parameters:
+      type: object
+      properties:
+        title: {type: string, default: "", description: "Article title."}
+        url: {type: string, default: "", description: "Source URL."}
+        source: {type: string, default: "", description: "Publisher; leave empty to derive from the URL."}
+        date: {type: string, default: "", description: "Publication date, e.g. 2026-08-07."}
+        style: {type: string, enum: [plain, markdown], default: "plain", description: "Output format."}
+      required: []
