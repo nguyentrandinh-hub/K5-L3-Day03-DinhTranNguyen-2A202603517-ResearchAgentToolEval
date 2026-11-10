@@ -6,10 +6,17 @@
 
 ## Team
 
-- Team:
-- Members:Tạ Tiến Dũng - 2A202603526
-- Provider/model:
-source_tier
+- Team: D3
+- Members:
+    > Đinh Trần Nguyên - 2A202603517
+
+    > Tạ Tiến Dũng - 2A202603526
+
+    > Nguyễn Anh Tú - 2A202603434
+
+    > Nguyễn Thanh Bình - 2A202603497
+
+- Provider/model:OpenRouter / openai/
 ---
 
 # PHẦN A — Giới thiệu agent
@@ -62,7 +69,7 @@ Provider/model: **OpenRouter / `openai/gpt-4o-mini`**, temperature = 0. Các s�
 | v0 | Baseline: prompt và tool declaration ban đầu | Đo lỗi routing/args trước khi tối ưu để có mốc so sánh. | Chưa có | **13/20 — 65%** | [v0 base](../runs/v0_B_base_openrouter_20261110T102032646724.json) |
 | v1 | `system_prompt.md`: bổ sung quy tắc không đoán handle/URL và hỏi lại khi thiếu thông tin | Quy tắc hỏi lại rõ ràng sẽ giảm lỗi tự điền thông tin thiếu, cải thiện kết quả base. | 13/20 — 65% | **16/20 — 80%** | [v1 base](../runs/v1_B_base_openrouter_20261110T104400962175.json) |
 | v2 (bản tích hợp `v2-source-tire-merged`) | Tích hợp `source_tire` vào `tools.yaml` và registry, giữ `cite`; dùng prompt chung của nhóm với quy tắc phạm vi và xác nhận gửi | Tool mới có điều kiện sử dụng rõ ràng sẽ giữ các case PASS cũ khi tích hợp với cấu hình chung của nhóm. | 16/20 — 80% | **20/20 — 100%**; giữ đủ 16 case PASS v1 | [v2 base](../runs/v2-source-tire-merged_B_base_openrouter_20261110T114804379960.json) |
-| v3 | `system_prompt.md`: thêm `Source Tire Routing and Validation`; giữ nguyên tools so với v2 tích hợp | Phân biệt thiếu URL với URL đã cung cấp nhưng sai định dạng sẽ giúp Agent gọi `source_tire` cho URL lỗi, đồng thời giữ kết quả base. | Base 20/20; source_tire 4/5 | **Base 20/20 — 100%; source_tire 5/5 — 100%** | [v3 base](../runs/v3_B_base_openrouter_20261110T122811939134.json), [v3 source_tire](../runs/v3_B_group_openrouter_20261110T122720852892.json) |
+| v3 | `system_prompt.md`: thêm `Source Tire Routing and Validation`; giữ nguyên tools so với v2 tích hợp | Phân biệt thiếu URL với URL đã cung cấp nhưng sai định dạng sẽ giúp Agent gọi `source_tire` cho URL lỗi, đồng thời giữ kết quả base. | Base 20/20| Base 20/20 — 100% | [v3 base](../runs/v3_B_base_openrouter_20261110T122811939134.json), [v3 source_tire](../runs/v3_B_group_openrouter_20261110T122720852892.json) |
 
 Chi tiết metric trên **base eval**:
 
@@ -82,7 +89,7 @@ Chi tiết metric trên **base eval**:
 | v2 tích hợp | `v2-source-tire-merged+p81b230f7120f+tc80d134c72b3` |
 | v3 | `v3+p4c50dcedface+tc80d134c72b3` |
 
-**Đối chứng cho tool mới:** v2 ban đầu với mô tả dài đạt 15/20; sau khi rút gọn riêng description của `source_tire`, [v2-compact](../runs/v2-compact_B_base_openrouter_20261110T113606053136.json) đạt lại 16/20 và giữ đúng 16 case PASS v1. Kết quả 20/20 của bản tích hợp đi kèm thay đổi prompt chung của nhóm và `cite`, nên không quy toàn bộ mức tăng cho riêng `source_tire`. Các lần thử trước vẫn được giữ trong log; xem [bằng chứng chi tiết v2](SOURCE_TIRE_V2.md).
+**Đối chứng cho tool mới:** v2 ban đầu với mô tả dài đạt 16/20; sau khi rút gọn riêng description của `source_tire`, [v2-compact](../runs/v2-compact_B_base_openrouter_20261110T113606053136.json) đạt lại 16/20 và giữ đúng 16 case PASS v1. Kết quả 20/20 của bản tích hợp đi kèm thay đổi prompt chung của nhóm và `cite`, nên không quy toàn bộ mức tăng cho riêng `source_tire`. Các lần thử trước vẫn được giữ trong log; xem [bằng chứng chi tiết v2](SOURCE_TIRE_V2.md).
 
 **Kiểm chứng giả thuyết v3:** ở [v2 source_tire](../runs/v2-source-tire-merged_B_group_openrouter_20261110T114656905887.json), case `ST_invalid` đưa URL `https://` nhưng Agent gọi `clarify`, khiến bộ 5 case chỉ đạt 4/5. Với quy tắc routing mới, v3 gọi `source_tire(url="https://")` và nhận `error="invalid_url"`, đạt 5/5. Bộ này chỉ gồm 5 case riêng của tool, không phải toàn bộ `eval_group.json`. Base v3 vẫn giữ đủ 16/16 case từng PASS ở v1 và 20/20 case của v2 tích hợp.
 
@@ -101,23 +108,48 @@ Use actual failures from `results[*].result.failures`.
 
 | Case ID | Failure Type | Actual Tool Calls | What Failed | Fix |
 |---|---|---|---|---|
-|  |  |  |  |  |
+| G02_send_when_user_confirmed | wrong_boundary |clarify(question="Bạn có chắc chắn muốn gửi câu này lên Telegram không?", response_type="yes_no")  | Agent gọi clarify thay vì send, dù người dùng đã xác nhận rõ trong yêu cầu. Log ghi missing tool call send và extra tool call clarify. | Điều chỉnh prompt để nhận diện xác nhận rõ ràng trong cùng lượt; khi đã đủ nội dung và xác nhận thì gọi send(confirmed=true), không hỏi lại. |
+|G05_papers_latest_count|wrong_arg_value|papers(query="AI agents", max_results=3, sort_by="lastUpdatedDate")|Agent truyền sai sort_by: expected submittedDate, actual lastUpdatedDate|Quy định rõ “paper mới nhất” theo ngày nộp sử dụng sort_by="submittedDate"; phân biệt với ngày cập nhật lastUpdatedDate.|
 
 ## B3. Team Eval Cases
 
 List the 10 cases added to `data/eval_group.json` (5 single turn + 5 multi turn).
 
+### Added Evaluation Cases — `save_digest`
+
 | Case ID | What It Tests | Expected Tool/Behavior | Result |
 |---|---|---|---|
-|  |  |  |  |
+| SD01_confirmed_save | Save digest with explicit confirmation in the same turn. | `save_digest` with correct `title`, `content`, and `confirmed=true`. | PASS |
+| SD02_no_confirmation | Handle a save request without explicit confirmation. | Call `clarify(response_type="yes_no")`; do not save. | PASS |
+| SD03_draft_only | Create a draft without saving or sending. | May call `format`; must not call `send` or `save_digest`. | PASS |
+| SD04_missing_content | Handle missing digest content. | Ask for missing content using `clarify`; do not save incomplete content. | PASS |
+| SD05_argument_accuracy | Preserve exact title and Markdown content. | Call `save_digest` with accurate arguments and `confirmed=true`. | PASS |
+| SD06_confirmation_final_turn | Handle explicit confirmation in a multi-turn conversation. | Call `save_digest` with previously provided content and `confirmed=true`. | PASS |
+| SD07_cancellation | Respect cancellation of a save request. | Do not call `save_digest` after cancellation. | PASS |
+| SD08_title_updated | Update the digest title while preserving existing content. | Call `save_digest` with updated title and original content. | PASS |
+| SD09_content_updated | Replace previous digest content with updated content. | Call `save_digest` with the latest content and correct title. | PASS |
+| SD10_ambiguous_approval | Handle ambiguous user approval safely. | Call `clarify(response_type="yes_no")`; do not save without explicit confirmation. | PASS |
 
+**Total:** 10 evaluation cases  
+**Single-turn:** 5 cases  
+**Multi-turn:** 5 cases  
+**Passed:** 10/10 (100%)  
+**Model:** `openai/gpt-4o-mini`  
+**Evaluation Suite:** Group Evaluation (Phase B)
 ## B4. Live Chat Evidence
 
 Use `transcripts/*.transcript.json`.
 
+### B4 — Live Chat Evidence
+
 | Turn | User Request | Tool Calls | Version Evidence | Outcome |
 |---|---|---|---|---|
-|  |  |  |  |  |
+| 1 | `hello` | None | v2 / OpenRouter / `openai/gpt-4o-mini` | Agent responded to the greeting without calling tools. |
+| 2 | Request AI/robotics information | `lookup`, `social_search` | v2 / OpenRouter / `openai/gpt-4o-mini` | Agent retrieved information using web and social search tools. |
+| 3 | Process retrieved results and prepare a digest | `clean_results` → `format` → `save_digest(confirmed=false)` | v2 / OpenRouter / `openai/gpt-4o-mini` | Agent processed and formatted results. The save operation was not authorized because `confirmed=false`. |
+| 4 | Follow-up request outside the permitted workflow | None | v2 / OpenRouter / `openai/gpt-4o-mini` | Agent responded without calling tools. |
+
+Evidence file: transcripts/v2_openrouter_20261110T124738364162.transcript.json
 
 ## B5. Bonus Evidence
 
@@ -134,10 +166,21 @@ Tool unit tests: số test đã viết, số bug tìm được trong tool có s�
 
 ## B6. Reflection
 
-- Which fixes belonged in `system_prompt.md`?
-- Which fixes belonged in `tools.yaml`?
-- Which failure needed manual review instead of automatic grading?
-- What would you improve next?
+1. Which fixes belonged in `system_prompt.md`?
++ Cải thiện khả năng ghi nhớ ngữ cảnh hội thoại nhiều lượt (G10).
++ Yêu cầu xác nhận rõ ràng trước khi lưu hoặc gửi dữ liệu (SD10).
++ Xử lý đúng yêu cầu chỉ tạo bản nháp (SD03) và từ chối yêu cầu ngoài phạm vi (G03).
+2. Which fixes belonged in `tools.yaml`?
++ Không cần chỉnh sửa trong lần cải tiến này.
++ Tool schema đã phù hợp; lỗi chủ yếu đến từ cách Agent lựa chọn và sử dụng công cụ.
+3. Which failure needed manual review instead of automatic grading?
++ G03 và SD03: Đều PASS khi đánh giá tự động nhưng hành vi ban đầu chưa đúng yêu cầu.
++ Cần kiểm tra nội dung phản hồi và mức độ tuân thủ ý định người dùng.
+4. What would you improve next?
++ Bổ sung kiểm tra tự động về chất lượng phản hồi, không chỉ tool calls.
++ Đánh giá toàn bộ hội thoại nhiều lượt thay vì chỉ lượt cuối.
++ Kiểm thử cơ chế xác nhận và cấp quyền trên CLI/Streamlit.
++ Đánh giá trên bộ test mới để kiểm tra khả năng tổng quát hóa.
 
 ## B7. Small Local Model Challenge (bonus)
 

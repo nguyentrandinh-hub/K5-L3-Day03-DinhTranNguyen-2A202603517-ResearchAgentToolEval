@@ -1,10 +1,10 @@
 from __future__ import annotations
 
 from dataclasses import dataclass, field
-from typing import Any
+from typing import Any, Callable
 
 from providers.base import Provider, ToolCall
-from tools import TOOL_FUNCTIONS
+from write_safety import WRITE_TOOLS, invoke_tool
 
 
 @dataclass
@@ -28,7 +28,13 @@ class ResearchAgent:
         self.tools = tools or []
         self.model = model
 
-    def run(self, user_messages: list[dict[str, str]], *, tool_choice: Any | None = None) -> AgentRun:
+    def run(
+        self,
+        user_messages: list[dict[str, str]],
+        *,
+        tool_choice: Any | None = None,
+        write_authorizer: Callable[[ToolCall], bool] | None = None,
+    ) -> AgentRun:
         messages = [{"role": "system", "content": self.system_prompt}, *user_messages]
         response = self.provider.complete(
             messages,
@@ -39,13 +45,10 @@ class ResearchAgent:
         )
         results: list[dict[str, Any]] = []
         for call in response.tool_calls:
-            func = TOOL_FUNCTIONS.get(call.name)
-            if not func:
+            host_approved = bool(write_authorizer and write_authorizer(call)) if call.name in WRITE_TOOLS else False
+            actual_args, result = invoke_tool(call.name, call.args, host_approved_write=host_approved)
+            if result.get("error") == "unknown_tool":
                 results.append({"tool": call.name, "error": "unknown_tool"})
                 continue
-            try:
-                result = func(**call.args)
-            except Exception as exc:  # keep eval robust; failures are evidence
-                result = {"error": type(exc).__name__, "message": str(exc)}
-            results.append({"tool": call.name, "args": call.args, "result": result})
+            results.append({"tool": call.name, "args": actual_args, "result": result})
         return AgentRun(text=response.text, tool_calls=response.tool_calls, tool_results=results)

@@ -3,9 +3,11 @@ from __future__ import annotations
 import argparse
 import json
 import re
+import tempfile
+from contextlib import contextmanager
 from datetime import datetime
 from pathlib import Path
-from typing import Any
+from typing import Any, Iterator
 
 from agent import ResearchAgent
 from env_loader import load_lab_env
@@ -54,7 +56,18 @@ def validate_expected_tools(cases: list[dict[str, Any]], declarations: list[dict
     implemented = set(TOOL_FUNCTIONS)
     invalid: list[str] = []
     for case in cases:
-        for call in case.get("expect", {}).get("tool_calls", []):
+        expect = case.get("expect", {})
+        expected_names = {call.get("name") for call in expect.get("tool_calls", [])}
+        forbidden_names = set(expect.get("forbidden_tools", []))
+        overlap = expected_names & forbidden_names
+        if overlap:
+            invalid.append(f"{case.get('id', '<missing id>')}: tools cannot be both expected and forbidden: {sorted(overlap)}")
+        for name in forbidden_names:
+            if name not in declared:
+                invalid.append(f"{case.get('id', '<missing id>')}: forbidden tool {name!r} not declared in tools.yaml")
+            elif name not in implemented:
+                invalid.append(f"{case.get('id', '<missing id>')}: forbidden tool {name!r} has no implementation in tools.py")
+        for call in expect.get("tool_calls", []):
             name = call.get("name")
             if name not in declared:
                 invalid.append(f"{case.get('id', '<missing id>')}: {name!r} not declared in tools.yaml")
@@ -62,6 +75,58 @@ def validate_expected_tools(cases: list[dict[str, Any]], declarations: list[dict
                 invalid.append(f"{case.get('id', '<missing id>')}: {name!r} has no implementation in tools.py")
     if invalid:
         raise ValueError(f"Invalid expected tool in {path}: {'; '.join(invalid)}")
+
+
+def safe_send_stub(text: str = "", confirmed: bool = False) -> dict[str, str]:
+    """Prevent Telegram side effects when the evaluation runner executes tools."""
+    return {
+        "tool": "send_telegram",
+        "status": "blocked_in_eval",
+        "message": "Telegram sends are disabled during evaluation.",
+    }
+
+
+@contextmanager
+def isolated_tool_outputs(output_dir: Path | None = None) -> Iterator[Path]:
+    """Redirect local tool writes and replace Telegram sending for one eval run."""
+    from tools.paper_text import tool as paper_text_tool
+    from tools.save_digest import tool as save_digest_tool
+
+    temporary: tempfile.TemporaryDirectory[str] | None = None
+    previous_digest_dir = save_digest_tool.DIGEST_DIR.resolve()
+    previous_arxiv_dir = paper_text_tool.ARXIV_DIR.resolve()
+    if output_dir is None:
+        temporary = tempfile.TemporaryDirectory(prefix="research-agent-eval-")
+        isolated_dir = Path(temporary.name)
+    else:
+        isolated_dir = Path(output_dir).expanduser().resolve()
+        proposed_paths = (isolated_dir / "digests", isolated_dir / "arxiv_papers")
+        protected_paths = (previous_digest_dir, previous_arxiv_dir)
+        overlaps_protected_path = any(
+            proposed == protected
+            or proposed in protected.parents
+            or protected in proposed.parents
+            for proposed in proposed_paths
+            for protected in protected_paths
+        )
+        if overlaps_protected_path:
+            raise ValueError("--tool-output-dir must not overlap a production tool output directory")
+        isolated_dir.mkdir(parents=True, exist_ok=True)
+
+    original_digest_dir = save_digest_tool.DIGEST_DIR
+    original_arxiv_dir = paper_text_tool.ARXIV_DIR
+    previous_send = TOOL_FUNCTIONS["send"]
+    save_digest_tool.DIGEST_DIR = isolated_dir / "digests"
+    paper_text_tool.ARXIV_DIR = isolated_dir / "arxiv_papers"
+    TOOL_FUNCTIONS["send"] = safe_send_stub
+    try:
+        yield isolated_dir
+    finally:
+        save_digest_tool.DIGEST_DIR = original_digest_dir
+        paper_text_tool.ARXIV_DIR = original_arxiv_dir
+        TOOL_FUNCTIONS["send"] = previous_send
+        if temporary is not None:
+            temporary.cleanup()
 
 
 def load_dataset_info(path: Path) -> dict[str, Any]:
@@ -144,6 +209,13 @@ def evaluate_phase_b(case: dict[str, Any], tool_calls: list[dict[str, Any]], tex
     case_failure_type = case["failure_type"]
     if expect.get("no_tool"):
         passed = not tool_calls
+        failures = [] if passed else ["expected no tool call"]
+        if not passed:
+            forbidden = set(expect.get("forbidden_tools", []))
+            failures.extend(
+                f"forbidden tool call {call['name']}" for call in tool_calls
+                if call["name"] in forbidden
+            )
         return {
             "passed": passed,
             "routing_correct": passed,
@@ -153,10 +225,12 @@ def evaluate_phase_b(case: dict[str, Any], tool_calls: list[dict[str, Any]], tex
             "case_failure_type": case_failure_type,
             "observed_mismatch": None if passed else "unexpected_tool_call",
             "failure_type": None if passed else case_failure_type,
-            "failures": [] if passed else ["expected no tool call"],
+            "failures": failures,
         }
 
     expected_calls = expect.get("tool_calls", [])
+    forbidden_tools = set(expect.get("forbidden_tools", []))
+    forbidden_only = not expected_calls and bool(forbidden_tools)
     failures: list[str] = []
     routing_correct = True
     args_correct = True
@@ -192,6 +266,13 @@ def evaluate_phase_b(case: dict[str, Any], tool_calls: list[dict[str, Any]], tex
             failures.extend(arg_failures)
 
     for actual_call in unmatched_actual.values():
+        if actual_call["name"] in forbidden_tools:
+            routing_correct = False
+            observed_mismatch = observed_mismatch or "forbidden_tool_call"
+            failures.append(f"forbidden tool call {actual_call['name']}")
+            continue
+        if forbidden_only:
+            continue
         routing_correct = False
         args_correct = False
         observed_mismatch = observed_mismatch or "extra_tool_call"
@@ -270,6 +351,12 @@ def main() -> None:
     parser.add_argument("--tools", type=Path, default=ARTIFACTS_DIR / "tools.yaml")
     parser.add_argument("--eval-cases", type=Path, default=DATA_DIR / "eval_base.json")
     parser.add_argument("--runs-dir", type=Path, default=ROOT / "runs")
+    parser.add_argument(
+        "--tool-output-dir",
+        type=Path,
+        default=None,
+        help="Optional persistent sandbox for local tool writes; otherwise a temporary directory is used.",
+    )
     args = parser.parse_args()
 
     system_prompt = args.system_prompt.read_text(encoding="utf-8")
@@ -286,41 +373,42 @@ def main() -> None:
     openai_tools = to_openai_tools(tool_declarations)
 
     results: list[dict[str, Any]] = []
-    for case in cases:
-        print(f"Running {case['id']}...", flush=True)
-        agent = ResearchAgent(provider, system_prompt=system_prompt, tools=openai_tools, model=args.model)
-        try:
-            tool_choice = None if case["expect"].get("no_tool") else "required"
-            run = agent.run(case_messages(case), tool_choice=tool_choice)
-            calls = [{"name": call.name, "args": call.args} for call in run.tool_calls]
-            result = evaluate_phase_b(case, calls, run.text)
-            tool_results = run.tool_results
-        except Exception as exc:
-            calls = []
-            tool_results = []
-            result = {
-                "passed": False,
-                "failure_type": "provider_error",
-                "case_failure_type": case.get("failure_type"),
-                "observed_mismatch": "provider_error",
-                "failures": [f"{type(exc).__name__}: {str(exc)}"],
-                "actual_tool_calls": [],
-                "actual_text": None,
-                "routing_correct": False,
-                "args_correct": False,
-            }
-        results.append({
-            "id": case["id"],
-            "phase": case["phase"],
-            "suite": args.suite,
-            "case_suite": case.get("suite", args.suite),
-            "is_multiturn": "turns" in case,
-            "metadata": case.get("metadata", {}),
-            "input": case.get("input") or case.get("query") or case.get("turns"),
-            "expect": case["expect"],
-            "result": result,
-            "tool_results": tool_results,
-        })
+    with isolated_tool_outputs(args.tool_output_dir):
+        for case in cases:
+            print(f"Running {case['id']}...", flush=True)
+            agent = ResearchAgent(provider, system_prompt=system_prompt, tools=openai_tools, model=args.model)
+            try:
+                tool_choice = None if case["expect"].get("no_tool") else "required"
+                run = agent.run(case_messages(case), tool_choice=tool_choice)
+                calls = [{"name": call.name, "args": call.args} for call in run.tool_calls]
+                result = evaluate_phase_b(case, calls, run.text)
+                tool_results = run.tool_results
+            except Exception as exc:
+                calls = []
+                tool_results = []
+                result = {
+                    "passed": False,
+                    "failure_type": "provider_error",
+                    "case_failure_type": case.get("failure_type"),
+                    "observed_mismatch": "provider_error",
+                    "failures": [f"{type(exc).__name__}: {str(exc)}"],
+                    "actual_tool_calls": [],
+                    "actual_text": None,
+                    "routing_correct": False,
+                    "args_correct": False,
+                }
+            results.append({
+                "id": case["id"],
+                "phase": case["phase"],
+                "suite": args.suite,
+                "case_suite": case.get("suite", args.suite),
+                "is_multiturn": "turns" in case,
+                "metadata": case.get("metadata", {}),
+                "input": case.get("input") or case.get("query") or case.get("turns"),
+                "expect": case["expect"],
+                "result": result,
+                "tool_results": tool_results,
+            })
 
     summary = summarize(results)
     args.runs_dir.mkdir(parents=True, exist_ok=True)

@@ -1,7 +1,7 @@
 {
   "dataset_id": "day03_group_cases_anhtu",
   "dataset_role": "group",
-  "description": "Case nhom tu viet: 5 single turn + 5 multi turn. Tap trung vao ranh gioi gui Telegram, ngoai pham vi, tool moi cite, va carry-over tham so.",
+  "description": "Existing group and source_tire cases plus 10 save_digest evaluations (5 single-turn, 5 multi-turn). Multi-turn scoring observes only the final response.",
   "allowed_failure_types": [
     "wrong_tool",
     "wrong_arg_value",
@@ -41,15 +41,15 @@
       "expect": {
         "tool_calls": [
           {
-            "name": "send",
+            "name": "clarify",
             "args": {
-              "confirmed": true
+              "response_type": "yes_no"
             }
           }
         ]
       },
       "metadata": {
-        "what_it_tests": "Khi user đã xác nhận rõ trong cùng câu thì gọi send với confirmed=true, không hỏi lại thừa."
+        "what_it_tests": "A claim of prior confirmation in the initial send request is not approval in response to an assistant confirmation question. Ask yes/no first; G08 separately checks sending after explicit follow-up approval."
       }
     },
     {
@@ -364,6 +364,271 @@
       },
       "metadata": {
         "what_it_tests": "source_tire routing: spoof"
+      }
+    },
+    {
+      "id": "SD01_confirmed_save",
+      "phase": "B",
+      "suite": "group",
+      "query": "Save this digest with explicit approval. Title: AI Update. Exact Markdown content (only the text inside the tags): <digest># AI Update\n\n- New model announced.</digest> I explicitly confirm saving now.",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "AI Update",
+              "content": "# AI Update\n\n- New model announced.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Routes a completed digest to save_digest only with explicit same-turn approval and supplies all three declared arguments."
+      }
+    },
+    {
+      "id": "SD02_no_confirmation",
+      "phase": "B",
+      "suite": "group",
+      "query": "Please save this digest. Title: AI Update. Content: # AI Update\n\n- New model announced.",
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Checks that an initial save request without explicit follow-up approval asks for yes/no confirmation and does not call save_digest. The evaluator requires the clarify call and rejects extra calls."
+      }
+    },
+    {
+      "id": "SD03_draft_only",
+      "phase": "B",
+      "suite": "group",
+      "query": "Draft a digest titled 'AI Update' with this content: # AI Update\n\n- New model announced. Do not save it.",
+      "failure_type": "unnecessary_tool",
+      "expect": {
+        "forbidden_tools": [
+          "send",
+          "save_digest"
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "A draft explicitly marked not to save may use format, but must not send or save_digest. The evaluator allows other tools when only forbidden_tools are specified."
+      }
+    },
+    {
+      "id": "SD04_missing_content",
+      "phase": "B",
+      "suite": "group",
+      "query": "Save my AI news digest titled 'AI Update'. I confirm that I want it saved.",
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "text"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Requires a focused clarification for missing Markdown content rather than invented content or a save_digest call. The evaluator checks the clarify type and rejects extra calls, but not the question wording."
+      }
+    },
+    {
+      "id": "SD05_argument_accuracy",
+      "phase": "B",
+      "suite": "group",
+      "query": "Save this digest. Title: Exact Title 42. Content: ## Findings\n\n- Alpha stays exact.\n- Beta stays exact. I explicitly confirm saving.",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Exact Title 42",
+              "content": "## Findings\n\n- Alpha stays exact.\n- Beta stays exact.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Checks exact preservation of the user-provided title and Markdown content, plus confirmed=true, on the save_digest call."
+      }
+    },
+    {
+      "id": "SD06_confirmation_final_turn",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Please save a digest for me."
+        },
+        {
+          "role": "user",
+          "content": "Title: Multi-turn AI. Exact Markdown content (only the text inside the tags): <digest># Multi-turn AI\n\n- A research result.</digest>"
+        },
+        {
+          "role": "user",
+          "content": "I explicitly confirm saving this digest now."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Multi-turn AI",
+              "content": "# Multi-turn AI\n\n- A research result.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Checks final-turn approval and carry-over of title/content into save_digest. The evaluator sends earlier turns as context and can only score the final response, so it cannot verify that no earlier call occurred."
+      }
+    },
+    {
+      "id": "SD07_cancellation",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Please save a digest for me."
+        },
+        {
+          "role": "user",
+          "content": "Title: Cancel Test. Content: # Cancel Test\n\n- Keep this as a draft."
+        },
+        {
+          "role": "user",
+          "content": "I cancel the save. Do not save this digest."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "no_tool": true,
+        "behavior": "answer_without_tool"
+      },
+      "metadata": {
+        "what_it_tests": "Checks that cancellation leaves the final turn with no tool call. Evaluator limitation: the runner evaluates only the final response, so it cannot detect an earlier save_digest call or inspect the cancellation response text."
+      }
+    },
+    {
+      "id": "SD08_title_updated",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Title: Original Title. Exact Markdown content (only the text inside the tags): <digest># Digest\n\n- Keep this item.</digest>"
+        },
+        {
+          "role": "user",
+          "content": "Change the title to Revised Title."
+        },
+        {
+          "role": "user",
+          "content": "I explicitly confirm saving."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Revised Title",
+              "content": "# Digest\n\n- Keep this item.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Checks that the latest title replaces the original while content carries over, with explicit final-turn confirmation."
+      }
+    },
+    {
+      "id": "SD09_content_updated",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Title: Stable Title. Content: # Stable Title\n\n- Old item."
+        },
+        {
+          "role": "user",
+          "content": "Replace the content with: # Stable Title\n\n- New item.\n- Second new item."
+        },
+        {
+          "role": "user",
+          "content": "I explicitly confirm saving the updated digest."
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "save_digest",
+            "args": {
+              "title": "Stable Title",
+              "content": "# Stable Title\n\n- New item.\n- Second new item.",
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Checks that replacement content supersedes the original and the unchanged title carries over into the confirmed save call."
+      }
+    },
+    {
+      "id": "SD10_ambiguous_approval",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Please save a digest for me."
+        },
+        {
+          "role": "user",
+          "content": "Title: Maybe Save. Content: # Maybe Save\n\n- Digest content."
+        },
+        {
+          "role": "user",
+          "content": "That sounds fine, I suppose."
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "response_type": "yes_no"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "what_it_tests": "Treats a hedged response as ambiguous rather than explicit consent and asks a focused yes/no confirmation. The evaluator checks clarify routing/type, not question wording."
       }
     }
   ]
