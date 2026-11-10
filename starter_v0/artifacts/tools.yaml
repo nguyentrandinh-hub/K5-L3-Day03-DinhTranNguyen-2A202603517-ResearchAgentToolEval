@@ -16,14 +16,14 @@
 tools:
   # ---------------- Core tools ----------------
   - name: clarify
-    description: "Gửi một câu hỏi cho người dùng."
+    description: "Ask the user ONE question and wait for the reply. Use when required info is missing (whose account, which URL, which topic) or before a write action such as send. Do NOT use when the request is already clear. Always set response_type."
     parameters:
       type: object
       properties:
-        question: {type: string, default: "", description: "Câu hỏi"}
-        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "Kiểu trả lời"}
-        options: {type: array, default: [], items: {type: string}, description: "Các lựa chọn"}
-      required: [question]
+        question: {type: string, default: "", description: "The single question to ask, in the user's language."}
+        response_type: {type: string, enum: [text, yes_no, choice], default: "text", description: "text = open question asking for missing info (handle, URL, topic). yes_no = asking permission/confirmation before an action such as send. choice = pick one of the given options (options must be provided)."}
+        options: {type: array, default: [], items: {type: string}, description: "Only for response_type=choice: the list of options. Leave empty otherwise."}
+      required: [question, response_type]
 
   - name: timeline
     description: "Lấy các bài đăng gần đây."
@@ -123,3 +123,15 @@ tools:
         max_pages: {type: integer, default: 5, description: "Số trang"}
         max_chars: {type: integer, default: 8000, description: "Số ký tự"}
       required: [arxiv_url]
+
+  - name: cite
+    description: "Format a citation for ONE known source (title, url, date). Use when the user asks to cite or reference a specific article. Do NOT use to search or read a page."
+    parameters:
+      type: object
+      properties:
+        title: {type: string, default: "", description: "Article title."}
+        url: {type: string, default: "", description: "Source URL."}
+        source: {type: string, default: "", description: "Publisher; leave empty to derive from the URL."}
+        date: {type: string, default: "", description: "Publication date, e.g. 2026-08-07."}
+        style: {type: string, enum: [plain, markdown], default: "plain", description: "Output format."}
+      required: []
