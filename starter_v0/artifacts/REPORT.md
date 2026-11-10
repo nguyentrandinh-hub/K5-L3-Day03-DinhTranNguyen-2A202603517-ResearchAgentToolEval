@@ -54,8 +54,8 @@ Fill from `artifacts/version_log.csv` and `runs/*.json`.
 
 | Version | Changed Artifact | Hypothesis | Metric Before | Metric After | Run File |
 |---|---|---|---:|---:|---|
-| v0 | baseline |  |  |  |  |
-| v1 |  |  |  |  |  |
+| v0 | baseline | N/A| N/A | 65% | v0_B_base_openrouter_20261110T100121203164.json |
+| v1 | artifacts/system_prompt.md | Agent chưa phân biệt rõ web news và X/Twitter; bổ sung routing rules có thể cải thiện việc chọn tool. | 65% | 80% | v0+pa9f434bc7efb+t5b22a2476d41.json |
 | v2 |  |  |  |  |  |
 | v3 |  |  |  |  |  |
 
